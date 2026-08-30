@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+const script = html.match(/<script>([\s\S]*?)<\/script>/)?.[1] ?? '';
 
 describe('GitHub Pages pilot', () => {
   it('keeps the approved pink responsive product shell', () => {
@@ -15,9 +16,20 @@ describe('GitHub Pages pilot', () => {
   });
 
   it('has JavaScript that parses before the first render', () => {
-    const match = html.match(/<script>([\s\S]*?)<\/script>/);
-    expect(match?.[1]).toBeTruthy();
-    expect(() => new Function(match![1])).not.toThrow();
+    expect(script).toBeTruthy();
+    expect(() => new Function(script)).not.toThrow();
+  });
+
+  it('recovers from stale or malformed local pilot data instead of rendering a blank page', () => {
+    const root = { innerHTML: '' };
+    const document = { getElementById: (id: string) => id === 'root' ? root : null };
+    const localStorage = {
+      getItem: () => JSON.stringify({ legacy: true }),
+      setItem: () => undefined,
+    };
+    const run = new Function('document','localStorage','Intl','crypto','confirm', script);
+    expect(() => run(document, localStorage, Intl, { randomUUID: () => 'id' }, () => true)).not.toThrow();
+    expect(root.innerHTML).toContain('VoeTupper');
   });
 
   it('preserves the full operational order workflow including cancellation', () => {

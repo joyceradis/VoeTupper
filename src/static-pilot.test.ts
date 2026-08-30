@@ -14,6 +14,12 @@ describe('GitHub Pages pilot', () => {
     expect(html).toContain('Incentivo da semana');
   });
 
+  it('has JavaScript that parses before the first render', () => {
+    const match = html.match(/<script>([\s\S]*?)<\/script>/);
+    expect(match?.[1]).toBeTruthy();
+    expect(() => new Function(match![1])).not.toThrow();
+  });
+
   it('preserves the full operational order workflow including cancellation', () => {
     expect(html).toContain("function cancelOrder(id)");
     expect(html).toContain("onclick=\"cancelOrder('");

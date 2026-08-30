@@ -15,7 +15,7 @@ export function buildTodaySummary(input:{week:Week;orders:Order[];consultants:Co
     realized,
     goal: input.week.teamGoal,
     progress: input.week.teamGoal > 0 ? realized / input.week.teamGoal : 0,
-    activeOffers: input.offers.filter(o => o.active && (o.weekId === input.week.id || !o.weekId)),
+    activeOffers: input.offers.filter(o => o.active && (o.weekId === input.week.id || (!o.weekId && o.campaignId === input.week.campaignId))),
     queue: pending.map(o => ({...o,nextAction:nextActionLabel(o.stage)})),
   };
 }

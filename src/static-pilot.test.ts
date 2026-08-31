@@ -21,8 +21,11 @@ describe('VoeTupper utility-first pilot', () => {
   });
 
   it('keeps the real operational order workflow across static assets', () => {
-    for (const field of ['Recebi por','Resumo / itens','Qtd.','Valor','Pagamento','Conferido','Portal','Print','Finalizado','Cancelado','Próxima ação']) {
+    for (const field of ['Recebi por','Resumo / itens','Qtd.','Valor','Pagamento','Portal','Print','Próxima ação']) {
       expect(bundle).toContain(field);
+    }
+    for (const state of ['RECEBIDO','CONFERIDO','NO PORTAL','PRINT ENVIADO','FINALIZADO','CANCELADO']) {
+      expect(js).toContain(state);
     }
     expect(js).toContain('function nextAction');
     expect(js).toContain('function cancelOrder');

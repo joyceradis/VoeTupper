@@ -4,7 +4,9 @@ import { describe, expect, it } from 'vitest';
 const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const css = readFileSync(new URL('../app.css', import.meta.url), 'utf8');
 const js = readFileSync(new URL('../app.js', import.meta.url), 'utf8');
-const bundle = `${html}\n${css}\n${js}`;
+const hotfix = readFileSync(new URL('../hotfix.js', import.meta.url), 'utf8');
+const hotfixCss = readFileSync(new URL('../hotfix.css', import.meta.url), 'utf8');
+const bundle = `${html}\n${css}\n${js}\n${hotfix}\n${hotfixCss}`;
 
 describe('VoeTupper utility-first pilot', () => {
   it('keeps a useful operational contract in the progressive shell', () => {
@@ -17,6 +19,7 @@ describe('VoeTupper utility-first pilot', () => {
     expect(html).toContain('data-cycle="semana"');
     expect(js).toContain("week:'35/2026',vitrine:'08/2026'");
     expect(js).toContain("week:'36/2026',vitrine:'09/2026'");
+    expect(hotfix).toContain("w35.vitrine='09/2026'");
     expect(js).toContain('function closingLabel');
   });
 
@@ -46,11 +49,17 @@ describe('VoeTupper utility-first pilot', () => {
     expect(html).toContain('VoeTupper');
     expect(css).toContain('.sidebar');
     expect(css).toContain('.mobile-nav');
+    expect(hotfixCss).toContain('.team-columns');
+    expect(hotfixCss).toContain('.team-kpis');
     expect(js).toContain('function nav()');
   });
 
-  it('has external JavaScript that parses before first interaction', () => {
-    expect(html).toContain('src="./app.js?v=1"');
+  it('loads versioned recovery assets and both scripts parse', () => {
+    expect(html).toContain('src="./app.js?v=4"');
+    expect(html).toContain('src="./hotfix.js?v=4"');
+    expect(html).toContain('href="./hotfix.css?v=4"');
+    expect(hotfix).toContain('Só remove a chave depois de persistir os dados com sucesso.');
     expect(() => new Function(js)).not.toThrow();
+    expect(() => new Function(hotfix)).not.toThrow();
   });
 });

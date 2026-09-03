@@ -9,10 +9,12 @@ const hotfixCss = readFileSync(new URL('../hotfix.css', import.meta.url), 'utf8'
 let product = '';
 let productCss = '';
 let network = '';
+let networkCss = '';
 try { product = readFileSync(new URL('../product-v6.js', import.meta.url), 'utf8'); } catch {}
 try { productCss = readFileSync(new URL('../product-v6.css', import.meta.url), 'utf8'); } catch {}
 try { network = readFileSync(new URL('../network-v7.js', import.meta.url), 'utf8'); } catch {}
-const bundle = `${html}\n${css}\n${js}\n${hotfix}\n${hotfixCss}\n${product}\n${productCss}\n${network}`;
+try { networkCss = readFileSync(new URL('../network-v7.css', import.meta.url), 'utf8'); } catch {}
+const bundle = `${html}\n${css}\n${js}\n${hotfix}\n${hotfixCss}\n${product}\n${productCss}\n${network}\n${networkCss}`;
 
 describe('VoeTupper utility-first pilot', () => {
   it('keeps a useful operational contract in the progressive shell', () => {
@@ -60,6 +62,7 @@ describe('VoeTupper utility-first pilot', () => {
     expect(productCss).toContain('.vt6-secret');
     expect(productCss).toContain('.vt6-network');
     expect(productCss).toContain('@media');
+    expect(networkCss).toContain('.vt7-region-card');
   });
 
   it('defines the new social navigation without consuming a tab for closing', () => {
@@ -72,7 +75,8 @@ describe('VoeTupper utility-first pilot', () => {
   });
 
   it('supports Orkut-like network surfaces with controlled operational data', () => {
-    for (const copy of ['Mural','Ranking','Árvore','Meu perfil','Conquistas']) expect(product).toContain(copy);
+    for (const copy of ['Mural','Ranking','Árvore','Conquistas']) expect(product).toContain(copy);
+    expect(product).toContain('MEU PERFIL');
     expect(product).toContain("role:'consultant'");
     expect(product).toContain("role==='leader'");
     expect(product).toContain('Ritheli Radis de Souza de Oliveira');
@@ -86,7 +90,7 @@ describe('VoeTupper utility-first pilot', () => {
     for (const area of ['Norte do estado','Noroeste','Serra','Vitória','Vila Velha e sul do estado']) expect(network).toContain(area);
     expect(network).toContain('regionalAreas');
     expect(network).toContain('Gerusa');
-    expect(network).toContain("current:true");
+    expect(network).toContain('current:true');
   });
 
   it('treats recruitment and sales as different goals', () => {
@@ -109,13 +113,16 @@ describe('VoeTupper utility-first pilot', () => {
     expect(network).not.toContain('—');
   });
 
-  it('loads progressive layers after recovery and scripts parse', () => {
-    expect(html).toContain('product-v6.css?v=6');
-    expect(html).toContain('product-v6.js?v=6');
+  it('loads v7 progressive layers after recovery and scripts parse', () => {
+    expect(html).toContain('product-v6.css?v=7');
+    expect(html).toContain('product-v6.js?v=7');
+    expect(html).toContain('network-v7.css?v=7');
+    expect(html).toContain('network-v7.js?v=7');
     expect(html.indexOf('hotfix.js')).toBeLessThan(html.indexOf('product-v6.js'));
+    expect(html.indexOf('product-v6.js')).toBeLessThan(html.indexOf('network-v7.js'));
     expect(() => new Function(js)).not.toThrow();
     expect(() => new Function(hotfix)).not.toThrow();
     expect(() => new Function(product)).not.toThrow();
-    if (network) expect(() => new Function(network)).not.toThrow();
+    expect(() => new Function(network)).not.toThrow();
   });
 });

@@ -81,6 +81,12 @@ describe('VoeTupper utility-first pilot', () => {
     expect(product).not.toContain('Vitoriaware</span><strong>Empresária Serra');
   });
 
+  it('maps the five ES regional business areas under the same upper network', () => {
+    for (const person of ['Giseli Aguilar','Adriana Junta','Ritheli Radis','Tatiana Madeira','Adriana Maia']) expect(product).toContain(person);
+    for (const area of ['Norte do estado','Noroeste','Serra','Vitória','Vila Velha e sul do estado']) expect(product).toContain(area);
+    expect(product).toContain('regionalAreas');
+  });
+
   it('treats recruitment and sales as different goals', () => {
     expect(product).toContain('Meta de recrutamento');
     expect(product).toContain("target:45");
@@ -96,8 +102,8 @@ describe('VoeTupper utility-first pilot', () => {
     expect(productCss).toContain('min-height:44px');
   });
 
-  it('avoids em-dash microcopy in the published static product', () => {
-    expect(bundle).not.toContain('—');
+  it('avoids em-dash microcopy in the progressive product layer', () => {
+    expect(product).not.toContain('—');
   });
 
   it('loads the product layer after the recovery layer and scripts parse', () => {

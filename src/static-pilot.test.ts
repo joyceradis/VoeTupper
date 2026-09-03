@@ -62,6 +62,44 @@ describe('VoeTupper utility-first pilot', () => {
     expect(productCss).toContain('@media');
   });
 
+  it('defines the new social navigation without consuming a tab for closing', () => {
+    expect(product).toContain("['today','Hoje']");
+    expect(product).toContain("['network','Rede']");
+    expect(product).toContain("['orders','Pedidos']");
+    expect(product).toContain("['profile','Perfil']");
+    expect(product).not.toContain("['closing','Fechamento']");
+    expect(product).toContain("go('closing')");
+  });
+
+  it('supports Orkut-like network surfaces with controlled operational data', () => {
+    for (const copy of ['Mural','Ranking','Árvore','Meu perfil','Conquistas']) expect(product).toContain(copy);
+    expect(product).toContain("role:'consultant'");
+    expect(product).toContain("role==='leader'");
+    expect(product).toContain('Ritheli Radis de Souza de Oliveira');
+    expect(product).toContain('Distrito Grande Vitória');
+    expect(product).toContain('Gerusa');
+    expect(product).not.toContain('Vitoriaware</span><strong>Empresária Serra');
+  });
+
+  it('treats recruitment and sales as different goals', () => {
+    expect(product).toContain('Meta de recrutamento');
+    expect(product).toContain("target:45");
+    expect(product).toContain("type:'recruitment'");
+    expect(product).toContain("type:'sales'");
+    expect(product).toContain('Novas consultoras');
+  });
+
+  it('uses configurable external access and iPhone-safe bottom navigation', () => {
+    expect(product).toContain('Abrir Tupperware');
+    expect(product).toContain('portalUrl');
+    expect(productCss).toContain('safe-area-inset-bottom');
+    expect(productCss).toContain('min-height:44px');
+  });
+
+  it('avoids em-dash microcopy in the published static product', () => {
+    expect(bundle).not.toContain('—');
+  });
+
   it('loads the product layer after the recovery layer and scripts parse', () => {
     expect(html).toContain('product-v6.css?v=6');
     expect(html).toContain('product-v6.js?v=6');

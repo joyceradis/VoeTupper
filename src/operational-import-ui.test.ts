@@ -4,14 +4,17 @@ import { describe, expect, it } from 'vitest';
 const html = readFileSync(new URL('../index.html', import.meta.url),'utf8');
 const js = readFileSync(new URL('../operational-import.js', import.meta.url),'utf8');
 const csv = readFileSync(new URL('../operational-import-csv.js', import.meta.url),'utf8');
+const review = readFileSync(new URL('../operational-import-review.js', import.meta.url),'utf8');
 
 describe('safe operational import UI', () => {
-  it('loads the admin import module without persisting uploaded rows locally', () => {
+  it('loads the admin import modules without persisting uploaded rows locally', () => {
     expect(html).toContain('operational-import.js');
     expect(html).toContain('operational-import-csv.js');
-    expect(js).not.toContain('localStorage.setItem');
-    expect(js).not.toContain('sessionStorage.setItem');
-    expect(csv).not.toContain('localStorage.setItem');
+    expect(html).toContain('operational-import-review.js');
+    for (const source of [js,csv,review]) {
+      expect(source).not.toContain('localStorage.setItem');
+      expect(source).not.toContain('sessionStorage.setItem');
+    }
   });
 
   it('implements the four-step preview workflow', () => {
@@ -27,6 +30,16 @@ describe('safe operational import UI', () => {
     expect(js).toContain('Confirmação administrativa obrigatória');
     expect(js).toContain('null');
     expect(js).not.toContain('autoMerge');
+    expect(review).toContain('same_person_confirmed');
+    expect(review).toContain('keep_separate');
+    expect(review).toContain('não faz merge automático');
+  });
+
+  it('allows administrative correction of canonical name, group and role before submit', () => {
+    expect(review).toContain('canonical_name');
+    expect(review).toContain('corrected_group');
+    expect(review).toContain('corrected_role');
+    expect(review).toContain('vtImportApplyCorrection');
   });
 
   it('detects one delimiter per file so Brazilian decimal commas remain intact', () => {

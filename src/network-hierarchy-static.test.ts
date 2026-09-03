@@ -2,7 +2,6 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 const network = readFileSync(new URL('../network-es.js', import.meta.url),'utf8');
-const product = readFileSync(new URL('../product-v6.js', import.meta.url),'utf8');
 
 describe('ES network hierarchy', () => {
   it('represents Gerusa as Distribuição ES and maps six districts', () => {
@@ -19,10 +18,10 @@ describe('ES network hierarchy', () => {
     expect((network.match(/district:'/g)||[])).toHaveLength(6);
   });
 
-  it('uses Serra as the current district and keeps the state distribution explicit', () => {
-    expect(product).toContain("district:'Serra'");
-    expect(product).toContain("distribution:'Espírito Santo'");
-    expect(product).toContain("distributionManager:'Gerusa'");
+  it('normalizes the pilot workspace to Serra under the state distribution', () => {
+    expect(network).toContain("district:'Serra'");
+    expect(network).toContain("distribution:'Espírito Santo'");
+    expect(network).toContain("distributionManager:'Gerusa'");
     expect(network).toContain('<span>Distritos</span>');
     expect(network).not.toContain('Gerusa · Distrito');
   });

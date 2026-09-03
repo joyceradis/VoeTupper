@@ -6,15 +6,12 @@ const css = readFileSync(new URL('../app.css', import.meta.url), 'utf8');
 const js = readFileSync(new URL('../app.js', import.meta.url), 'utf8');
 const hotfix = readFileSync(new URL('../hotfix.js', import.meta.url), 'utf8');
 const hotfixCss = readFileSync(new URL('../hotfix.css', import.meta.url), 'utf8');
-let product = '';
-let productCss = '';
-let network = '';
-let networkCss = '';
-try { product = readFileSync(new URL('../product-v6.js', import.meta.url), 'utf8'); } catch {}
-try { productCss = readFileSync(new URL('../product-v6.css', import.meta.url), 'utf8'); } catch {}
-try { network = readFileSync(new URL('../network-v7.js', import.meta.url), 'utf8'); } catch {}
-try { networkCss = readFileSync(new URL('../network-v7.css', import.meta.url), 'utf8'); } catch {}
+const product = readFileSync(new URL('../product-v6.js', import.meta.url), 'utf8');
+const productCss = readFileSync(new URL('../product-v6.css', import.meta.url), 'utf8');
+const network = readFileSync(new URL('../network-es.js', import.meta.url), 'utf8');
+const networkCss = readFileSync(new URL('../network-es.css', import.meta.url), 'utf8');
 const bundle = `${html}\n${css}\n${js}\n${hotfix}\n${hotfixCss}\n${product}\n${productCss}\n${network}\n${networkCss}`;
+const activeProduct = `${html}\n${product}\n${network}`;
 
 describe('VoeTupper utility-first pilot', () => {
   it('keeps a useful operational contract in the progressive shell', () => {
@@ -38,12 +35,10 @@ describe('VoeTupper utility-first pilot', () => {
     expect(js).toContain('localStorage');
   });
 
-  it('makes the team directory operational for the Vitoriaware workflow', () => {
+  it('makes the team directory operational for the local workflow', () => {
     for (const copy of ['Copiar código','Copiar senha','H / RECADASTRAR','Líder responsável','Grupo','CPF','Data de nascimento','Copiar dados para cadastro']) expect(product).toContain(copy);
     expect(product).toContain('portalPassword');
     expect(product).toContain('Abrir cadastro oficial');
-    expect(product).toContain('Grande Vitória');
-    expect(product).toContain('Gerusa');
     expect(product).toContain('Empresária Serra');
     expect(product).toContain('Visão em árvore');
   });
@@ -56,13 +51,13 @@ describe('VoeTupper utility-first pilot', () => {
     for (const copy of ['A gente junto, voa mais alto','Você está voando','Seu negócio, do seu jeito','Rumo ao próximo nível','Bom dia! 🌸']) expect(bundle).not.toContain(copy);
   });
 
-  it('keeps restrained pink branding and dense responsive navigation', () => {
+  it('keeps restrained pink branding and responsive social navigation', () => {
     expect(css).toContain('--pink:#e91e63');
     expect(productCss).toContain('.vt6-team-table');
     expect(productCss).toContain('.vt6-secret');
     expect(productCss).toContain('.vt6-network');
-    expect(productCss).toContain('@media');
-    expect(networkCss).toContain('.vt7-region-card');
+    expect(networkCss).toContain('.vt7-mobile-nav');
+    expect(networkCss).toContain('@media');
   });
 
   it('defines the new social navigation without consuming a tab for closing', () => {
@@ -74,28 +69,26 @@ describe('VoeTupper utility-first pilot', () => {
     expect(product).toContain("go('closing')");
   });
 
-  it('supports Orkut-like network surfaces with controlled operational data', () => {
-    for (const copy of ['Mural','Ranking','Árvore','Conquistas']) expect(product).toContain(copy);
-    expect(product).toContain('MEU PERFIL');
+  it('supports profile, wall, ranking, tree and achievements', () => {
+    for (const copy of ['Mural','Ranking','Árvore','MEU PERFIL','Conquistas']) expect(product).toContain(copy);
     expect(product).toContain("role:'consultant'");
     expect(product).toContain("role==='leader'");
     expect(product).toContain('Ritheli Radis de Souza de Oliveira');
-    expect(product).toContain('Distrito Grande Vitória');
-    expect(product).toContain('Gerusa');
-    expect(product).not.toContain('Vitoriaware</span><strong>Empresária Serra');
+    expect(network).toContain('Espírito Santo');
+    expect(network).toContain('Gerusa');
   });
 
-  it('maps the five ES regional business areas under the same upper network', () => {
+  it('maps the five ES regional business areas without inventing lower teams', () => {
     for (const person of ['Giseli Aguilar','Adriana Junta','Ritheli Radis','Tatiana Madeira','Adriana Maia']) expect(network).toContain(person);
     for (const area of ['Norte do estado','Noroeste','Serra','Vitória','Vila Velha e sul do estado']) expect(network).toContain(area);
-    expect(network).toContain('regionalAreas');
-    expect(network).toContain('Gerusa');
+    expect(network).toContain('VT8_ES_NETWORK');
     expect(network).toContain('current:true');
+    expect(network).toContain('dados confirmados');
   });
 
   it('treats recruitment and sales as different goals', () => {
     expect(product).toContain('Meta de recrutamento');
-    expect(product).toContain("target:45");
+    expect(product).toContain('target:45');
     expect(product).toContain("type:'recruitment'");
     expect(product).toContain("type:'sales'");
     expect(product).toContain('Novas consultoras');
@@ -104,22 +97,21 @@ describe('VoeTupper utility-first pilot', () => {
   it('uses configurable external access and iPhone-safe bottom navigation', () => {
     expect(product).toContain('Abrir Tupperware');
     expect(product).toContain('portalUrl');
-    expect(productCss).toContain('safe-area-inset-bottom');
-    expect(productCss).toContain('min-height:44px');
+    expect(networkCss).toContain('safe-area-inset-bottom');
+    expect(networkCss).toContain('min-height:44px');
   });
 
-  it('avoids em-dash microcopy in the progressive product layers', () => {
-    expect(product).not.toContain('—');
-    expect(network).not.toContain('—');
+  it('avoids em-dash microcopy in the active progressive product', () => {
+    expect(activeProduct).not.toContain('—');
   });
 
   it('loads v7 progressive layers after recovery and scripts parse', () => {
     expect(html).toContain('product-v6.css?v=7');
+    expect(html).toContain('network-es.css?v=7');
     expect(html).toContain('product-v6.js?v=7');
-    expect(html).toContain('network-v7.css?v=7');
-    expect(html).toContain('network-v7.js?v=7');
+    expect(html).toContain('network-es.js?v=7');
     expect(html.indexOf('hotfix.js')).toBeLessThan(html.indexOf('product-v6.js'));
-    expect(html.indexOf('product-v6.js')).toBeLessThan(html.indexOf('network-v7.js'));
+    expect(html.indexOf('product-v6.js')).toBeLessThan(html.indexOf('network-es.js'));
     expect(() => new Function(js)).not.toThrow();
     expect(() => new Function(hotfix)).not.toThrow();
     expect(() => new Function(product)).not.toThrow();

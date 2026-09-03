@@ -6,7 +6,7 @@ const VT8_ES_NETWORK={
     {id:'noroeste',name:'Adriana Junta',region:'Noroeste'},
     {id:'serra',name:'Ritheli Radis',region:'Serra',current:true},
     {id:'vitoria',name:'Tatiana Madeira',region:'Vitória'},
-    {id:'vilavelha-sul',name:'Adriana Maia',region:'Vila Velha e Sul do estado'}
+    {id:'vilavelha-sul',name:'Adriana Maia',region:'Vila Velha e sul do estado'}
   ]
 };
 

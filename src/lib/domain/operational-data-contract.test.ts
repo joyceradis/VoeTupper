@@ -7,6 +7,7 @@ function read(path:string){
 }
 
 const schema = read('supabase/migrations/0005_operational_data.sql');
+const admin = read('supabase/migrations/0006_admin_permissions.sql');
 const seed = read('supabase/seed-operational-pilot.sql');
 
 describe('operational data and import contract', () => {
@@ -48,8 +49,19 @@ describe('operational data and import contract', () => {
     expect(schema).toContain('source text');
   });
 
+  it('reserves identity, membership and imports for distribution/business-owner admins', () => {
+    expect(admin).toContain('can_admin_scope');
+    expect(admin).toContain("viewer.role = 'DISTRIBUTION'");
+    expect(admin).toContain("viewer.role = 'BUSINESS_OWNER'");
+    expect(admin).toContain('memberships_admin_write');
+    expect(admin).toContain('import_batches_admin');
+    expect(admin).toContain('weekly_performance_admin_write');
+    expect(admin).not.toContain("viewer.role = 'LEADER' and public.can_admin_scope");
+  });
+
   it('seeds only supplied pilot facts and does not invent missing identities', () => {
     expect(seed).toContain('Distrito Plenitude');
+    expect(seed).toContain('pending_review');
     expect(seed).toContain('Vitoriaware');
     for (const group of ['Chama Viva','Charme','Chefas','Equipe Excelência','Esperança','Estrela do Sucesso','Fenomenal','Fidelidade','Force Active','Grandes Conquistas','Joia Rara','Mania de Vencer','Mima','Tropical','Tupper Amigas','Yeshua']) {
       expect(seed).toContain(group);

@@ -8,9 +8,11 @@ const hotfix = readFileSync(new URL('../hotfix.js', import.meta.url), 'utf8');
 const hotfixCss = readFileSync(new URL('../hotfix.css', import.meta.url), 'utf8');
 let product = '';
 let productCss = '';
+let network = '';
 try { product = readFileSync(new URL('../product-v6.js', import.meta.url), 'utf8'); } catch {}
 try { productCss = readFileSync(new URL('../product-v6.css', import.meta.url), 'utf8'); } catch {}
-const bundle = `${html}\n${css}\n${js}\n${hotfix}\n${hotfixCss}\n${product}\n${productCss}`;
+try { network = readFileSync(new URL('../network-v7.js', import.meta.url), 'utf8'); } catch {}
+const bundle = `${html}\n${css}\n${js}\n${hotfix}\n${hotfixCss}\n${product}\n${productCss}\n${network}`;
 
 describe('VoeTupper utility-first pilot', () => {
   it('keeps a useful operational contract in the progressive shell', () => {
@@ -35,9 +37,7 @@ describe('VoeTupper utility-first pilot', () => {
   });
 
   it('makes the team directory operational for the Vitoriaware workflow', () => {
-    for (const copy of ['Copiar código','Copiar senha','H / RECADASTRAR','Líder responsável','Grupo','CPF','Data de nascimento','Copiar dados para cadastro']) {
-      expect(product).toContain(copy);
-    }
+    for (const copy of ['Copiar código','Copiar senha','H / RECADASTRAR','Líder responsável','Grupo','CPF','Data de nascimento','Copiar dados para cadastro']) expect(product).toContain(copy);
     expect(product).toContain('portalPassword');
     expect(product).toContain('Abrir cadastro oficial');
     expect(product).toContain('Grande Vitória');
@@ -82,9 +82,11 @@ describe('VoeTupper utility-first pilot', () => {
   });
 
   it('maps the five ES regional business areas under the same upper network', () => {
-    for (const person of ['Giseli Aguilar','Adriana Junta','Ritheli Radis','Tatiana Madeira','Adriana Maia']) expect(product).toContain(person);
-    for (const area of ['Norte do estado','Noroeste','Serra','Vitória','Vila Velha e sul do estado']) expect(product).toContain(area);
-    expect(product).toContain('regionalAreas');
+    for (const person of ['Giseli Aguilar','Adriana Junta','Ritheli Radis','Tatiana Madeira','Adriana Maia']) expect(network).toContain(person);
+    for (const area of ['Norte do estado','Noroeste','Serra','Vitória','Vila Velha e sul do estado']) expect(network).toContain(area);
+    expect(network).toContain('regionalAreas');
+    expect(network).toContain('Gerusa');
+    expect(network).toContain("current:true");
   });
 
   it('treats recruitment and sales as different goals', () => {
@@ -102,16 +104,18 @@ describe('VoeTupper utility-first pilot', () => {
     expect(productCss).toContain('min-height:44px');
   });
 
-  it('avoids em-dash microcopy in the progressive product layer', () => {
+  it('avoids em-dash microcopy in the progressive product layers', () => {
     expect(product).not.toContain('—');
+    expect(network).not.toContain('—');
   });
 
-  it('loads the product layer after the recovery layer and scripts parse', () => {
+  it('loads progressive layers after recovery and scripts parse', () => {
     expect(html).toContain('product-v6.css?v=6');
     expect(html).toContain('product-v6.js?v=6');
     expect(html.indexOf('hotfix.js')).toBeLessThan(html.indexOf('product-v6.js'));
     expect(() => new Function(js)).not.toThrow();
     expect(() => new Function(hotfix)).not.toThrow();
     expect(() => new Function(product)).not.toThrow();
+    if (network) expect(() => new Function(network)).not.toThrow();
   });
 });

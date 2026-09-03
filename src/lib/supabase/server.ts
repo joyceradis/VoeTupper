@@ -1,7 +1,9 @@
-import { createServerClient } from '@supabase/ssr';
+import { createServerClient,type CookieOptions } from '@supabase/ssr';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 import { currentSupabasePublicConfig } from './config';
+
+type CookieToSet={name:string;value:string;options:CookieOptions};
 
 export async function getSupabaseServerClient():Promise<SupabaseClient|null>{
   const config=currentSupabasePublicConfig();
@@ -10,7 +12,7 @@ export async function getSupabaseServerClient():Promise<SupabaseClient|null>{
   return createServerClient(config.url,config.anonKey,{
     cookies:{
       getAll(){return cookieStore.getAll();},
-      setAll(cookiesToSet){
+      setAll(cookiesToSet:CookieToSet[]){
         try{
           cookiesToSet.forEach(({name,value,options})=>cookieStore.set(name,value,options));
         }catch{

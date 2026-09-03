@@ -17,6 +17,9 @@ describe('PWA static contract',()=>{
    const sw=readFileSync(join(process.cwd(),'sw.js'),'utf8');
    expect(sw).toContain('CACHE_NAME');
    expect(sw).toContain("request.method!=='GET'");
+   expect(sw).toContain('operational-import.js?v=1');
+   expect(sw).toContain('operational-import-csv.js?v=1');
+   expect(sw).toContain('operational-import.css?v=1');
    expect(sw).not.toContain('/api/');
  });
 });

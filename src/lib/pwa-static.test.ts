@@ -19,6 +19,7 @@ describe('PWA static contract',()=>{
    expect(sw).toContain("request.method!=='GET'");
    expect(sw).toContain('operational-import.js?v=1');
    expect(sw).toContain('operational-import-csv.js?v=1');
+   expect(sw).toContain('operational-import-review.js?v=1');
    expect(sw).toContain('operational-import.css?v=1');
    expect(sw).not.toContain('/api/');
  });

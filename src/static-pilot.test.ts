@@ -35,6 +35,20 @@ describe('VoeTupper utility-first pilot', () => {
     expect(js).toContain('localStorage');
   });
 
+  it('renames the pilot login without rotating browser storage or the existing password record', () => {
+    expect(js).toContain("const STATE_KEY='voetupper-vitoriaware-state-v1'");
+    expect(js).toContain("const AUTH_KEY='voetupper-vitoriaware-auth-v1'");
+    expect(js).toContain("const SESSION_KEY='voetupper-vitoriaware-session-v1'");
+    expect(js).toContain("const MASTER_HANDLE='ritheli.radis'");
+    expect(js).toContain("const LEGACY_MASTER_HANDLE='empresaria01-teste-master'");
+    expect(js).toContain('handle===MASTER_HANDLE||handle===LEGACY_MASTER_HANDLE');
+    expect(js).toContain('hashSecret(password,current.salt)');
+    expect(js).not.toContain('localStorage.removeItem(STATE_KEY)');
+    expect(js).not.toContain('localStorage.removeItem(AUTH_KEY)');
+    expect(bundle).toContain('Ritheli Radis');
+    expect(activeProduct).toContain('Distrito Plenitude');
+  });
+
   it('makes the team directory operational for the local workflow', () => {
     for (const copy of ['Copiar código','Copiar senha','H / RECADASTRAR','Líder responsável','Grupo','CPF','Data de nascimento','Copiar dados para cadastro']) expect(product).toContain(copy);
     expect(product).toContain('portalPassword');

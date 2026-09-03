@@ -44,6 +44,7 @@ function vtNameLooksPartial(name){const s=String(name||'').trim();if(!s)return t
 function vtKnownGroup(name){const n=vtNorm(name);return VT_IMPORT_GROUPS.find(g=>vtNorm(g)===n)||null}
 function vtAnalyzeImport(){
   const s=vtImportSession,issues=[],seen=new Map();let orders=0,items=0,veteran=0,recruit=0,total=0;
+  const measured={orders:false,items:false,veteran:false,recruit:false,total:false};
   s.rows.forEach((row,index)=>{
     const rawName=vtMapped(row,'name'),rawGroup=vtMapped(row,'group');
     const name=rawName?String(rawName).trim():null,group=rawGroup?String(rawGroup).trim():null;
@@ -52,14 +53,17 @@ function vtAnalyzeImport(){
     if(name&&vtNameLooksPartial(name))issues.push({type:'partial_name',row:index+2,label:'Nomes incompletos',message:'Nome possivelmente truncado. Manter canonical_name = null até confirmação.'});
     if(group&&!vtKnownGroup(group))issues.push({type:'unknown_group',row:index+2,label:'Grupos desconhecidos',message:`Grupo “${group}” não reconhecido. Não será criado automaticamente.`});
     const vo=vtNum(vtMapped(row,'veteran')),rr=vtNum(vtMapped(row,'recruit')),tt=vtNum(vtMapped(row,'total'));
-    if(vo!==null&&rr!==null&&tt!==null&&Math.abs((vo+rr)-tt)>0.009)issues.push({type:'total_mismatch',row:index+2,label:'Comparação dos totais',message:`Total informado difere de veteranas + recrutas.`});
+    if(vo!==null&&rr!==null&&tt!==null&&Math.abs((vo+rr)-tt)>0.009)issues.push({type:'total_mismatch',row:index+2,label:'Comparação dos totais',message:'Total informado difere de veteranas + recrutas.'});
     const o=vtNum(vtMapped(row,'orders')),it=vtNum(vtMapped(row,'items'));
-    if(o!==null)orders+=o;if(it!==null)items+=it;if(vo!==null)veteran+=vo;if(rr!==null)recruit+=rr;if(tt!==null)total+=tt;else if(vo!==null||rr!==null)total+=(vo||0)+(rr||0);
+    if(o!==null){orders+=o;measured.orders=true}if(it!==null){items+=it;measured.items=true}if(vo!==null){veteran+=vo;measured.veteran=true}if(rr!==null){recruit+=rr;measured.recruit=true}if(tt!==null){total+=tt;measured.total=true}else if(vo!==null&&rr!==null){total+=vo+rr;measured.total=true}
   });
   if(!s.period.week||!s.period.year)issues.push({type:'missing_period',row:null,label:'Período',message:'Semana e ano precisam ser informados antes da importação.'});
-  const calc={orders,items,veteran,recruit,total};
+  const calc={orders:measured.orders?orders:null,items:measured.items?items:null,veteran:measured.veteran?veteran:null,recruit:measured.recruit?recruit:null,total:measured.total?total:null};
   const expected=s.expected;
-  for(const k of ['orders','items','veteran','recruit','total'])if(expected[k]!==null&&Math.abs(calc[k]-expected[k])>0.009)issues.push({type:'expected_mismatch',row:null,label:'Comparação dos totais',message:`${k}: calculado ${calc[k].toFixed(2)} ≠ transcrito ${Number(expected[k]).toFixed(2)}.`});
+  for(const k of ['orders','items','veteran','recruit','total'])if(expected[k]!==null){
+    if(calc[k]===null)issues.push({type:'expected_mismatch',row:null,label:'Comparação dos totais',message:`${k}: não há valor calculável para comparar com o total transcrito.`});
+    else if(Math.abs(calc[k]-expected[k])>0.009)issues.push({type:'expected_mismatch',row:null,label:'Comparação dos totais',message:`${k}: calculado ${calc[k].toFixed(2)} ≠ transcrito ${Number(expected[k]).toFixed(2)}.`});
+  }
   s.issues=issues;s.metrics=calc;return s;
 }
 function vtImportSetMapping(key,value){vtImportSession.mapping[key]=value||null;vtAnalyzeImport();vtRenderImportModal()}
@@ -89,7 +93,8 @@ function vtImportIssues(){
   const wanted=['Possíveis duplicidades','Nomes incompletos','Grupos desconhecidos','Comparação dos totais'];
   return `<section class="vt-import-section"><h3>Relatório de erros</h3>${wanted.map(label=>{const arr=groups[label]||[];return `<div class="vt-import-issue ${arr.length?'warn':'ok'}"><strong>${label}</strong><span>${arr.length?`${arr.length} ocorrência${arr.length===1?'':'s'}`:'nenhuma ocorrência'}</span>${arr.slice(0,4).map(x=>`<small>${x.row?`Linha ${x.row}: `:''}${vtImportEsc(x.message)}</small>`).join('')}</div>`}).join('')}${issues.filter(i=>!wanted.includes(i.label)).map(i=>`<div class="vt-import-issue warn"><strong>${vtImportEsc(i.label)}</strong><small>${vtImportEsc(i.message)}</small></div>`).join('')}</section>`
 }
-function vtImportTotals(){const m=vtImportSession.metrics;if(!m)return'';return `<div class="vt-import-totals"><div><strong>${m.orders}</strong><span>pedidos</span></div><div><strong>${m.items}</strong><span>itens</span></div><div><strong>${fmtMoney?fmtMoney(m.veteran):m.veteran.toFixed(2)}</strong><span>veteranas</span></div><div><strong>${fmtMoney?fmtMoney(m.recruit):m.recruit.toFixed(2)}</strong><span>recrutas</span></div><div><strong>${fmtMoney?fmtMoney(m.total):m.total.toFixed(2)}</strong><span>total</span></div></div>`}
+function vtImportMetric(value,money=false){if(value===null||value===undefined)return'não informado';if(money)return typeof fmtMoney==='function'?fmtMoney(value):Number(value).toFixed(2);return value}
+function vtImportTotals(){const m=vtImportSession.metrics;if(!m)return'';return `<div class="vt-import-totals"><div><strong>${vtImportMetric(m.orders)}</strong><span>pedidos</span></div><div><strong>${vtImportMetric(m.items)}</strong><span>itens</span></div><div><strong>${vtImportMetric(m.veteran,true)}</strong><span>veteranas</span></div><div><strong>${vtImportMetric(m.recruit,true)}</strong><span>recrutas</span></div><div><strong>${vtImportMetric(m.total,true)}</strong><span>total</span></div></div>`}
 function vtPrepareImport(){
   vtAnalyzeImport();const blocking=vtImportSession.issues.some(i=>['missing_period','total_mismatch','expected_mismatch','unknown_group','duplicate_member'].includes(i.type));
   vtImportSession.preparedPayload={

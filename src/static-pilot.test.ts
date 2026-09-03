@@ -10,8 +10,9 @@ const product = readFileSync(new URL('../product-v6.js', import.meta.url), 'utf8
 const productCss = readFileSync(new URL('../product-v6.css', import.meta.url), 'utf8');
 const network = readFileSync(new URL('../network-es.js', import.meta.url), 'utf8');
 const networkCss = readFileSync(new URL('../network-es.css', import.meta.url), 'utf8');
-const bundle = `${html}\n${css}\n${js}\n${hotfix}\n${hotfixCss}\n${product}\n${productCss}\n${network}\n${networkCss}`;
-const activeProduct = `${html}\n${product}\n${network}`;
+const pilotDisplay = readFileSync(new URL('../pilot-display.js', import.meta.url), 'utf8');
+const bundle = `${html}\n${css}\n${js}\n${hotfix}\n${hotfixCss}\n${product}\n${productCss}\n${network}\n${networkCss}\n${pilotDisplay}`;
+const activeProduct = `${html}\n${product}\n${network}\n${pilotDisplay}`;
 
 describe('VoeTupper utility-first pilot', () => {
   it('keeps a useful operational contract in the progressive shell', () => {
@@ -33,6 +34,23 @@ describe('VoeTupper utility-first pilot', () => {
     expect(js).toContain('function nextAction');
     expect(js).toContain('function cancelOrder');
     expect(js).toContain('localStorage');
+  });
+
+  it('renames only the visible pilot identity while preserving browser storage and password compatibility', () => {
+    expect(js).toContain("const STATE_KEY='voetupper-vitoriaware-state-v1'");
+    expect(js).toContain("const AUTH_KEY='voetupper-vitoriaware-auth-v1'");
+    expect(js).toContain("const SESSION_KEY='voetupper-vitoriaware-session-v1'");
+    expect(js).toContain("const MASTER_HANDLE='empresaria01-teste-master'");
+    expect(js).toContain('hashSecret(password,current.salt)');
+    expect(html).toContain('pilot-display.js?v=1');
+    expect(pilotDisplay).toContain("VT9_VISIBLE_HANDLE='ritheli.radis'");
+    expect(pilotDisplay).toContain("VT9_LEGACY_HANDLE='empresaria01-teste-master'");
+    expect(pilotDisplay).toContain("VT9_DISPLAY_NAME='Ritheli Radis'");
+    expect(pilotDisplay).toContain("VT9_DISTRICT_LABEL='Distrito Plenitude'");
+    expect(pilotDisplay).not.toContain('localStorage');
+    expect(pilotDisplay).not.toContain('sessionStorage');
+    expect(js).not.toContain('localStorage.removeItem(STATE_KEY)');
+    expect(js).not.toContain('localStorage.removeItem(AUTH_KEY)');
   });
 
   it('makes the team directory operational for the local workflow', () => {
@@ -112,9 +130,11 @@ describe('VoeTupper utility-first pilot', () => {
     expect(html).toContain('network-es.js?v=7');
     expect(html.indexOf('hotfix.js')).toBeLessThan(html.indexOf('product-v6.js'));
     expect(html.indexOf('product-v6.js')).toBeLessThan(html.indexOf('network-es.js'));
+    expect(html.indexOf('network-es.js')).toBeLessThan(html.indexOf('pilot-display.js'));
     expect(() => new Function(js)).not.toThrow();
     expect(() => new Function(hotfix)).not.toThrow();
     expect(() => new Function(product)).not.toThrow();
     expect(() => new Function(network)).not.toThrow();
+    expect(() => new Function(pilotDisplay)).not.toThrow();
   });
 });

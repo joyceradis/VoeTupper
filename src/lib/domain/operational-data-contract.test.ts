@@ -83,7 +83,14 @@ describe('operational data and import contract', () => {
     for (const group of ['Chama Viva','Charme','Chefas','Equipe Excelência','Esperança','Estrela do Sucesso','Fenomenal','Fidelidade','Force Active','Grandes Conquistas','Joia Rara','Mania de Vencer','Mima','Tropical','Tupper Amigas','Yeshua']) {
       expect(seed).toContain(group);
     }
-    for (const total of ['33359.90','75265.10','53655.60','38764.90','105289.90']) expect(seed).toContain(total);
+    for (const weeklyComponents of [
+      '131,1840,102810.40,2479.50',
+      '50,766,36763.60,2001.30',
+      '70,1099,50397.40,3258.20',
+      '100,1332,71577.80,3687.30',
+      '47,516,32557.70,802.20'
+    ]) expect(seed).toContain(weeklyComponents);
+    expect(seed).toContain("'total_sales',306335.40");
     expect(seed).toContain('5572.50');
     expect(seed).toContain('partial_name');
     expect(seed).not.toMatch(/@[a-z0-9.-]+\.[a-z]{2,}/i);

@@ -14,16 +14,16 @@ describe('ES network hierarchy', () => {
       expect(network).toContain(person);
     }
 
-    for (const district of ['Norte','Noroeste','Serra','Vitória','Vila Velha e Sul','Cariacica']) {
-      expect(network).toContain(`district:'${district}'`);
-    }
+    const districts = ['Norte','Noroeste','Serra','Vitória','Vila Velha e Sul','Cariacica'];
+    for (const district of districts) expect(network).toContain(`district:'${district}'`);
+    expect((network.match(/district:'/g)||[])).toHaveLength(6);
   });
 
   it('uses Serra as the current district and keeps the state distribution explicit', () => {
     expect(product).toContain("district:'Serra'");
     expect(product).toContain("distribution:'Espírito Santo'");
     expect(product).toContain("distributionManager:'Gerusa'");
-    expect(network).toContain('6 Distritos');
+    expect(network).toContain('<span>Distritos</span>');
     expect(network).not.toContain('Gerusa · Distrito');
   });
 });

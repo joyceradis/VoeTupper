@@ -5,9 +5,8 @@ const network = readFileSync(new URL('../network-es.js', import.meta.url),'utf8'
 
 describe('ES network hierarchy', () => {
   it('represents Gerusa as Distribuição ES and maps six districts', () => {
-    expect(network).toContain("role:'Distribuição ES'");
+    expect(network).toContain("distribution:{name:'Gerusa',role:'Distribuição ES'}");
     expect(network).not.toContain("role:'Distrito'");
-    expect(network).toContain("name:'Gerusa'");
 
     for (const person of ['Giseli Aguilar','Adriana Junta','Ritheli Radis','Tatiana Madeira','Adriana Maia','Vanessa Luciana']) {
       expect(network).toContain(person);
@@ -21,7 +20,7 @@ describe('ES network hierarchy', () => {
   it('normalizes the pilot workspace to Serra under the state distribution', () => {
     expect(network).toContain("district:'Serra'");
     expect(network).toContain("distribution:'Espírito Santo'");
-    expect(network).toContain("distributionManager:'Gerusa'");
+    expect(network).toContain('distributionManager:VT8_ES_NETWORK.distribution.name');
     expect(network).toContain('<span>Distritos</span>');
     expect(network).not.toContain('Gerusa · Distrito');
   });

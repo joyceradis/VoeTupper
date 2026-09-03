@@ -34,6 +34,8 @@ describe('safe operational import UI', () => {
     expect(js).toContain('Confirmação administrativa obrigatória');
     expect(js).toContain('null');
     expect(js).not.toContain('autoMerge');
+    expect(js).not.toContain('total+=(vo||0)+(rr||0)');
+    expect(js).toContain('else if(vo!==null&&rr!==null)total+=vo+rr');
     expect(review).toContain('same_person_confirmed');
     expect(review).toContain('keep_separate');
     expect(review).toContain('não faz merge automático');

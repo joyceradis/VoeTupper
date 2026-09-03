@@ -30,6 +30,23 @@ describe('operational data and import contract', () => {
     expect(schema).toContain("detail_status in ('fully_detailed','partially_detailed','aggregate_only')");
   });
 
+  it('preserves unknown numeric facts as null instead of silently inventing zero', () => {
+    expect(schema).toContain('veteran_sales numeric(14,2) check(veteran_sales is null or veteran_sales >= 0)');
+    expect(schema).toContain('recruit_sales numeric(14,2) check(recruit_sales is null or recruit_sales >= 0)');
+    expect(schema).not.toContain('veteran_sales numeric(14,2) not null default 0');
+    expect(schema).not.toContain('recruit_sales numeric(14,2) not null default 0');
+    expect(schema).toContain('order_difference integer generated always as (calculated_order_count - expected_order_count) stored');
+    expect(schema).toContain('item_difference integer generated always as (calculated_item_quantity - expected_item_quantity) stored');
+    expect(schema).toContain('sales_difference numeric(14,2) generated always as (calculated_total_sales - expected_total_sales) stored');
+    expect(schema).not.toContain('coalesce(calculated_total_sales,0)-coalesce(expected_total_sales,0)');
+  });
+
+  it('keeps a temporary identity candidate key in staging rather than using names as primary keys', () => {
+    expect(schema).toContain('identity_candidate_key text');
+    expect(schema).toContain('district + normalized name + group');
+    expect(schema).toContain('mapped_person_id uuid references public.people');
+  });
+
   it('supports staged imports, quality issues and reconciliation before commit', () => {
     for (const table of ['import_batches','import_rows','import_issues','reconciliations']) {
       expect(schema).toContain(`public.${table}`);

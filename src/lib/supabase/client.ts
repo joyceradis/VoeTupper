@@ -1,2 +1,19 @@
+'use client';
+
 import { createBrowserClient } from '@supabase/ssr';
-export function createClient(){const url=process.env.NEXT_PUBLIC_SUPABASE_URL;const key=process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;if(!url||!key) return null;return createBrowserClient(url,key)}
+import type { SupabaseClient } from '@supabase/supabase-js';
+import { currentSupabasePublicConfig } from './config';
+
+let browserClient:SupabaseClient|null|undefined;
+
+export function getSupabaseBrowserClient():SupabaseClient|null{
+  if(browserClient!==undefined)return browserClient;
+  const config=currentSupabasePublicConfig();
+  if(!config){browserClient=null;return browserClient;}
+  browserClient=createBrowserClient(config.url,config.anonKey);
+  return browserClient;
+}
+
+export function createClient():SupabaseClient|null{
+  return getSupabaseBrowserClient();
+}

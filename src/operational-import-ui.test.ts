@@ -17,6 +17,10 @@ describe('safe operational import UI', () => {
     }
   });
 
+  it('keeps all static import scripts syntactically valid', () => {
+    for (const source of [js,csv,review]) expect(()=>new Function(source)).not.toThrow();
+  });
+
   it('implements the four-step preview workflow', () => {
     for (const copy of ['1. Arquivo','2. Conferência','3. Pendências','4. Confirmar importação']) {
       expect(js).toContain(copy);

@@ -12,13 +12,17 @@ describe('ES network hierarchy', () => {
       expect(network).toContain(person);
     }
 
-    const districts = ['Norte','Noroeste','Serra','Vitória','Vila Velha e Sul','Cariacica'];
+    const districts = ['Norte','Noroeste','Plenitude','Vitória','Vila Velha e Sul','Cariacica'];
     for (const district of districts) expect(network).toContain(`district:'${district}'`);
-    expect((network.match(/district:'/g)||[])).toHaveLength(6);
+
+    const businessDistricts = [...network.matchAll(/\{id:'[^']+',name:'[^']+',district:'([^']+)',region:/g)].map((match) => match[1]);
+    expect(businessDistricts).toEqual(districts);
+    expect(network).toContain("{id:'serra',name:'Ritheli Radis',district:'Plenitude',region:'Serra',current:true}");
   });
 
-  it('normalizes the pilot workspace to Serra under the state distribution', () => {
-    expect(network).toContain("district:'Serra'");
+  it('normalizes the pilot workspace to Distrito Plenitude in Serra under the state distribution', () => {
+    expect(network).toContain("district:'Plenitude'");
+    expect(network).toContain("region:'Serra'");
     expect(network).toContain("distribution:'Espírito Santo'");
     expect(network).toContain('distributionManager:VT8_ES_NETWORK.distribution.name');
     expect(network).toContain('<span>Distritos</span>');

@@ -43,6 +43,6 @@ describe('Grupo Fenomenal pilot network', () => {
   it('uses the approved Voe Tupper artwork in the site logo asset', () => {
     expect(logo).toContain('data:image/jpeg;base64,');
     expect(logo).toContain('aria-label="Voe Tupper"');
-    expect(html).toContain('logo.svg?v=8');
+    expect(html).toContain('logo.svg?v=9');
   });
 });

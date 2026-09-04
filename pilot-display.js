@@ -3,16 +3,24 @@ const VT9_LEGACY_HANDLE='empresaria01-teste-master';
 const VT9_DISPLAY_NAME='Ritheli Radis';
 const VT9_DISTRICT_LABEL='Distrito Plenitude';
 const VT9_REGION_LABEL='Serra / Espírito Santo';
+const VT9_APPROVED_LOGO='./logo.svg?v=10';
 let vt9ResolvedLogo='';
 
 async function vt9ResolveApprovedLogo(){
   if(vt9ResolvedLogo)return vt9ResolvedLogo;
   try{
-    const response=await fetch('./logo.svg?v=10',{cache:'no-store'});
+    const response=await fetch(VT9_APPROVED_LOGO,{cache:'no-store'});
     if(!response.ok)return'';
     const svg=await response.text();
-    const match=svg.match(/(?:href|xlink:href)=["'](data:image\/(?:jpeg|jpg|png);base64,[^"']+)["']/i);
-    if(match?.[1])vt9ResolvedLogo=match[1];
+    const marker='data:image/jpeg;base64,';
+    const start=svg.indexOf(marker);
+    if(start<0)return'';
+    const dataStart=start+marker.length;
+    let end=svg.indexOf('"',dataStart);
+    if(end<0)end=svg.indexOf("'",dataStart);
+    if(end<0)return'';
+    const payload=svg.slice(dataStart,end).replace(/\s+/g,'');
+    if(payload.length>100)vt9ResolvedLogo=marker+payload;
   }catch{}
   return vt9ResolvedLogo;
 }
@@ -22,7 +30,11 @@ function vt9ApplyApprovedLogo(){
   if(!images.length)return;
   vt9ResolveApprovedLogo().then(src=>{
     if(!src)return;
-    images.forEach(img=>{if(img.src!==src)img.src=src});
+    images.forEach(img=>{
+      img.onerror=null;
+      img.src=src;
+      img.style.objectFit='contain';
+    });
   });
 }
 
@@ -39,7 +51,7 @@ function vt9ApplyPilotIdentity(){
   const profileContext=document.querySelector('.vt7-profile-hero p');if(profileContext)profileContext.textContent=`Empresária · ${VT9_DISTRICT_LABEL} · Serra · Espírito Santo`;
   document.querySelectorAll('.vt7-quick-actions .quick').forEach(button=>{
     const title=button.querySelector('strong');
-    if(!title||title.textContent.trim()!=='Abrir Tupperware')return;
+    if(!title||!['Abrir Tupperware','Tupper.NET'].includes(title.textContent.trim()))return;
     title.textContent='Tupper.NET';
     const subtitle=button.querySelector('span');if(subtitle)subtitle.textContent='Abrir portal de pedidos';
   });

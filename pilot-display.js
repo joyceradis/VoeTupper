@@ -31,6 +31,7 @@ function vt9ApplyPilotIdentity(){
   const loginNote=document.querySelector('.login-note');if(loginNote)loginNote.textContent=`${VT9_DISPLAY_NAME} · ${VT9_DISTRICT_LABEL} · ${VT9_REGION_LABEL}`;
   document.querySelectorAll('.workspace-badge strong,.cycle > strong').forEach(el=>{el.textContent=VT9_DISPLAY_NAME});
   document.querySelectorAll('.workspace-badge span').forEach(el=>{el.textContent=`${VT9_DISTRICT_LABEL} · ${VT9_REGION_LABEL}`});
+  const brandImg=document.querySelector('.brand-row>img');if(brandImg)brandImg.src='./logo.svg?v=9';
   vt9ApplyApprovedLogo();
   const networkSmall=document.querySelector('.vt7-home-network .panel-head small');if(networkSmall)networkSmall.textContent=`${VT9_DISTRICT_LABEL} · ${VT9_REGION_LABEL}`;
   const currentCard=document.querySelector('.vt8-business-card.current small');if(currentCard)currentCard.textContent=`Empresária · ${VT9_DISTRICT_LABEL} · Serra`;

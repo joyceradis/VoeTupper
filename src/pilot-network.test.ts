@@ -1,31 +1,48 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
-const product = readFileSync(new URL('../product-v6.js', import.meta.url), 'utf8');
-const network = readFileSync(new URL('../network-es.js', import.meta.url), 'utf8');
-const pilot = readFileSync(new URL('../pilot-display.js', import.meta.url), 'utf8');
+const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+const pilotNetwork = readFileSync(new URL('../pilot-network.js', import.meta.url), 'utf8');
+const pilotDisplay = readFileSync(new URL('../pilot-display.js', import.meta.url), 'utf8');
 const logo = readFileSync(new URL('../logo.svg', import.meta.url), 'utf8');
 
 describe('Grupo Fenomenal pilot network', () => {
-  it('models the pilot identity and hierarchy at the source', () => {
-    expect(network).toContain("name:'Ritheli Radis'");
-    expect(network).toContain("district:'Plenitude'");
-    expect(network).toContain("group:'Fenomenal'");
-    expect(network).toContain("leader:'Ritheli Radis'");
-    expect(network).toContain('Grupo Fenomenal');
-    expect(network).not.toContain("name:`Empresária ${vt8CurrentDistrict.district}`");
+  it('models the approved pilot hierarchy without creating a fake consultant', () => {
+    expect(pilotNetwork).toContain("name:'Ritheli Radis'");
+    expect(pilotNetwork).toContain("district:'Plenitude'");
+    expect(pilotNetwork).toContain("group:'Fenomenal'");
+    expect(pilotNetwork).toContain("leader:'Ritheli Radis'");
+    expect(pilotNetwork).toContain('Grupo Fenomenal');
+    expect(pilotNetwork).toContain("id:'pilot-ritheli-leader'");
+    expect(pilotNetwork).toContain('return [vt10PilotLeader()]');
   });
 
-  it('assigns unlinked pilot consultants to Ritheli and Grupo Fenomenal without exposing credentials', () => {
-    expect(product).toContain("leader:c.leader||'Ritheli Radis'");
-    expect(product).toContain("group:c.group||'Fenomenal'");
-    expect(product).not.toContain('09365268745');
-    expect(network).not.toContain('09365268745');
-    expect(pilot).not.toContain('09365268745');
+  it('assigns only missing network metadata and preserves existing local records', () => {
+    expect(pilotNetwork).toContain('leader:c.leader||VT10_PILOT.leader');
+    expect(pilotNetwork).toContain('group:c.group||VT10_PILOT.group');
+    expect(pilotNetwork).toContain('...c');
+    expect(pilotNetwork).not.toContain('localStorage.clear');
+    expect(pilotNetwork).not.toContain('removeItem');
+  });
+
+  it('loads the pilot layer before the visual compatibility layer', () => {
+    expect(html).toContain('pilot-network.js?v=1');
+    expect(html.indexOf('network-es.js')).toBeLessThan(html.indexOf('pilot-network.js'));
+    expect(html.indexOf('pilot-network.js')).toBeLessThan(html.indexOf('pilot-display.js'));
+    expect(() => new Function(pilotNetwork)).not.toThrow();
+  });
+
+  it('does not commit the sample credential material', () => {
+    for (const secret of ['09365268745','familiaamor234','175773Jr%']) {
+      expect(pilotNetwork).not.toContain(secret);
+      expect(pilotDisplay).not.toContain(secret);
+      expect(html).not.toContain(secret);
+    }
   });
 
   it('uses the approved Voe Tupper artwork in the site logo asset', () => {
     expect(logo).toContain('data:image/jpeg;base64,');
     expect(logo).toContain('aria-label="Voe Tupper"');
+    expect(html).toContain('logo.svg?v=8');
   });
 });

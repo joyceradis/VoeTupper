@@ -14,7 +14,9 @@ describe('ES network hierarchy', () => {
 
     const districts = ['Norte','Noroeste','Plenitude','Vitória','Vila Velha e Sul','Cariacica'];
     for (const district of districts) expect(network).toContain(`district:'${district}'`);
-    expect((network.match(/district:'/g)||[])).toHaveLength(6);
+
+    const businessDistricts = [...network.matchAll(/\{id:'[^']+',name:'[^']+',district:'([^']+)',region:/g)].map((match) => match[1]);
+    expect(businessDistricts).toEqual(districts);
     expect(network).toContain("{id:'serra',name:'Ritheli Radis',district:'Plenitude',region:'Serra',current:true}");
   });
 

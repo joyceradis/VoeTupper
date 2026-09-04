@@ -63,6 +63,6 @@ Veja `docs/security/rls-matrix.md` para a matriz de RLS.
 
 ## Independência de fornecedores
 
-O software não é afiliado, patrocinado ou endossado pela Tupperware ou por outras empresas de venda direta. Não inclui logos, catálogos, scraping, automação de login ou submissão automática em portais de terceiros.
+O software não é afiliado, patrocinado ou endossado pela Tupperware ou por outras empresas de venda direta. Não inclui logotipos de terceiros, catálogos, scraping, automação de login ou submissão automática em portais de terceiros.
 
 Antes de uso real multiusuário: configurar entidade operadora, privacidade/termos definitivos, autenticação Supabase, backup, monitoramento, revisão de marca e canal de direitos do titular.

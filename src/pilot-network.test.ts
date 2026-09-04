@@ -1,10 +1,10 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const pilotNetwork = readFileSync(new URL('../pilot-network.js', import.meta.url), 'utf8');
 const pilotDisplay = readFileSync(new URL('../pilot-display.js', import.meta.url), 'utf8');
-const logo = readFileSync(new URL('../logo.svg', import.meta.url), 'utf8');
+const logo512 = new URL('../logo-512.png', import.meta.url);
 
 describe('Grupo Fenomenal pilot network', () => {
   it('models the approved pilot hierarchy without creating a fake consultant', () => {
@@ -41,8 +41,11 @@ describe('Grupo Fenomenal pilot network', () => {
   });
 
   it('uses the approved Voe Tupper artwork in the site logo asset', () => {
-    expect(logo).toContain('data:image/jpeg;base64,');
-    expect(logo).toContain('aria-label="Voe Tupper"');
-    expect(html).toContain('logo.svg?v=9');
+    expect(existsSync(logo512)).toBe(true);
+    const logo = readFileSync(logo512);
+    expect([...logo.subarray(0, 8)]).toEqual([137, 80, 78, 71, 13, 10, 26, 10]);
+    expect(logo.readUInt32BE(16)).toBe(512);
+    expect(logo.readUInt32BE(20)).toBe(512);
+    expect(html).toContain('logo-512.png?v=10');
   });
 });

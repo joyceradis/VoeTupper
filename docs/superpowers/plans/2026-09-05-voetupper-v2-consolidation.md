@@ -181,7 +181,7 @@ export type V2State = {
 };
 ```
 
-`createEmptyState()` includes Gerusa as `DISTRIBUTION`, Ritheli as `BUSINESS_OWNER`, zero goals for sales and recruitment, and no operational event. `createDemoState()` derives all wall content from its demo people, goals, and orders and is selected only by `?demo=1` when no saved state exists.
+`createEmptyState()` includes Gerusa as `DISTRIBUTION`, Ritheli as `BUSINESS_OWNER`, sales target zero, recruitment target 45 with current zero, and no operational event. `createDemoState()` derives all wall content from its demo people, goals, and orders and is selected only by `?demo=1` when no saved state exists.
 
 - [ ] **Step 4: Add independent selectors**
 

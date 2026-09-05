@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { createDemoState } from '../../lib/v2/model';
 import { AppShell } from './AppShell';
+import { NetworkView } from './NetworkView';
 import { OrderDialog } from './OrderDialog';
 import { OrdersView } from './OrdersView';
 import { TodayView } from './TodayView';
@@ -109,5 +110,56 @@ describe('VoeTupper V2 views', () => {
     expect(closing).not.toContain('Pedido cancelado de teste');
     expect(history).toContain('Pedido semanal');
     expect(history).toContain('Pedido cancelado de teste');
+  });
+
+  it('renders factual wall entries from the current network state', () => {
+    const html = renderToStaticMarkup(
+      <NetworkView state={createDemoState('2026-09-05T15:00:00.000Z')} mode="wall" onModeChange={() => undefined} dispatch={() => undefined} />,
+    );
+
+    expect(html).toContain('Meta em movimento');
+    expect(html).toContain('Pedido recebido');
+    expect(html).toContain('Consultora Lúcia');
+  });
+
+  it('explains truthfully when ranking cannot be calculated', () => {
+    const html = renderToStaticMarkup(
+      <NetworkView state={createDemoState('2026-09-05T15:00:00.000Z')} mode="ranking" onModeChange={() => undefined} dispatch={() => undefined} />,
+    );
+    expect(html).toContain('Líder Marina');
+    expect(html).toContain('Líder Paula');
+
+    const state = createDemoState('2026-09-05T15:00:00.000Z');
+    state.people = state.people.filter(person => person.id !== 'leader-paula');
+    const empty = renderToStaticMarkup(
+      <NetworkView state={state} mode="ranking" onModeChange={() => undefined} dispatch={() => undefined} />,
+    );
+    expect(empty).toContain('Ainda não há dados suficientes para comparar');
+  });
+
+  it('renders the expandable Serra hierarchy with person counts', () => {
+    const html = renderToStaticMarkup(
+      <NetworkView state={createDemoState('2026-09-05T15:00:00.000Z')} mode="tree" onModeChange={() => undefined} dispatch={() => undefined} />,
+    );
+
+    expect(html).toContain('<details');
+    expect(html).toContain('Distribuição Espírito Santo');
+    expect(html).toContain('Distrito Serra');
+    expect(html).toContain('Grupo Marina');
+    expect(html).toContain('pessoas');
+  });
+
+  it('shows authorized directory summaries without sensitive labels', () => {
+    const html = renderToStaticMarkup(
+      <NetworkView state={createDemoState('2026-09-05T15:00:00.000Z')} mode="directory" onModeChange={() => undefined} dispatch={() => undefined} />,
+    );
+
+    expect(html).toContain('Consultora Lúcia');
+    expect(html).toContain('Líder');
+    expect(html).toContain('Ativa');
+    expect(html).toContain('1003');
+    expect(html).not.toContain('CPF');
+    expect(html).not.toContain('Senha do portal');
+    expect(html).not.toContain('—');
   });
 });

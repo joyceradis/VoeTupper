@@ -67,4 +67,16 @@ describe('V2 selectors', () => {
     expect(selectDirectory(state, 'lider marina').map(person => person.name)).toEqual(['Líder Marina']);
     expect(selectDirectory(state, '1003').map(person => person.name)).toEqual(['Consultora Lúcia']);
   });
+
+  it('returns directory summaries without private contact fields', () => {
+    const state = createDemoState('2026-09-05T12:00:00.000Z');
+    state.people = state.people.map(person => person.id === 'consultant-lucia'
+      ? { ...person, phone: '(27) 99999-0000' }
+      : person);
+
+    const [entry] = selectDirectory(state, 'lucia');
+
+    expect(entry).toMatchObject({ name: 'Consultora Lúcia', businessCode: '1003' });
+    expect(entry).not.toHaveProperty('phone');
+  });
 });

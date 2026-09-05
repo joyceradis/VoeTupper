@@ -14,6 +14,7 @@ export type WallEntry = {
 };
 export type RankingDimension = 'SALES' | 'RECRUITMENT' | 'ACTIVE';
 export type RankingEntry = { position: number; person: Person; value: number; unit: 'BRL' | 'PEOPLE' };
+export type DirectoryEntry = Pick<Person, 'id' | 'name' | 'role' | 'status' | 'businessCode' | 'groupId' | 'groupName' | 'leaderId'>;
 export type NetworkTreeNode = {
   id: string;
   type: 'DISTRIBUTION' | 'DISTRICT' | 'LEADER' | 'GROUP' | 'PERSON' | 'REVIEW';
@@ -196,12 +197,22 @@ export function selectNetworkTree(state: V2State): NetworkTreeNode {
   };
 }
 
-export function selectDirectory(state: V2State, query: string): Person[] {
+export function selectDirectory(state: V2State, query: string): DirectoryEntry[] {
   const needle = normalizeSearch(query);
   return state.people
     .filter(person => person.districtId === state.workspace.districtId && person.role !== 'BUSINESS_OWNER')
     .filter(person => !needle || normalizeSearch([person.name, person.businessCode, person.groupName].filter(Boolean).join(' ')).includes(needle))
-    .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+    .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'))
+    .map(person => ({
+      id: person.id,
+      name: person.name,
+      role: person.role,
+      status: person.status,
+      businessCode: person.businessCode,
+      groupId: person.groupId,
+      groupName: person.groupName,
+      leaderId: person.leaderId,
+    }));
 }
 
 export function selectGoalsByType(state: V2State, type: GoalType) {

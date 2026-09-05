@@ -5,6 +5,7 @@ import { createLocalPilotStore, type PilotStore } from '../../lib/v2/storage';
 import type { V2State } from '../../lib/v2/model';
 import { v2Reducer, type V2Action } from '../../lib/v2/reducer';
 import { AppShell, type AppDestination } from './AppShell';
+import { NetworkView, type NetworkMode } from './NetworkView';
 import { OrderDialog } from './OrderDialog';
 import { OrdersView, type OrdersMode } from './OrdersView';
 import { TodayView } from './TodayView';
@@ -29,6 +30,7 @@ export default function VoeTupperApp() {
   const [state, setState] = useState<V2State | null>(null);
   const [active, setActive] = useState<AppDestination>('today');
   const [ordersMode, setOrdersMode] = useState<OrdersMode>('history');
+  const [networkMode, setNetworkMode] = useState<NetworkMode>('wall');
   const [orderDialogOpen, setOrderDialogOpen] = useState(false);
   const [warning, setWarning] = useState<string>();
   const stateRef = useRef<V2State | null>(null);
@@ -74,6 +76,8 @@ export default function VoeTupperApp() {
           <TodayView state={state} dispatch={dispatch} onOpenOrder={() => setOrderDialogOpen(true)} onOpenClosing={openClosing} onNavigate={navigate} />
         ) : active === 'orders' ? (
           <OrdersView state={state} mode={ordersMode} onModeChange={setOrdersMode} dispatch={dispatch} onOpenOrder={() => setOrderDialogOpen(true)} />
+        ) : active === 'network' ? (
+          <NetworkView state={state} mode={networkMode} onModeChange={setNetworkMode} dispatch={dispatch} />
         ) : (
           <PreviewDestination destination={active} />
         )}

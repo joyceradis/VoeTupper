@@ -3,9 +3,11 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { createDemoState } from '../../lib/v2/model';
 import { AppShell } from './AppShell';
+import { LoginView } from './LoginView';
 import { NetworkView } from './NetworkView';
 import { OrderDialog } from './OrderDialog';
 import { OrdersView } from './OrdersView';
+import { ProfileView } from './ProfileView';
 import { TodayView } from './TodayView';
 import { IconButton } from './ui';
 
@@ -161,5 +163,45 @@ describe('VoeTupper V2 views', () => {
     expect(html).not.toContain('CPF');
     expect(html).not.toContain('Senha do portal');
     expect(html).not.toContain('—');
+  });
+
+  it('presents local pilot access with the official identity', () => {
+    const html = renderToStaticMarkup(
+      <LoginView mode="create" busy={false} onSubmit={async () => undefined} />,
+    );
+
+    expect(html).toContain('src="/logo-512.png"');
+    expect(html).toContain('Acesso deste aparelho');
+    expect(html).toContain('Primeiro acesso');
+    expect(html).not.toContain('autenticação segura');
+    expect(html).not.toContain('multiusuário');
+    expect(html).not.toContain('—');
+  });
+
+  it('identifies Ritheli and keeps sales and recruitment goals distinct', () => {
+    const html = renderToStaticMarkup(
+      <ProfileView state={createDemoState('2026-09-05T15:00:00.000Z')} dispatch={() => undefined} onSignOut={() => undefined} />,
+    );
+
+    expect(html).toContain('Ritheli Radis');
+    expect(html).toContain('Empresária');
+    expect(html).toContain('Distrito Serra');
+    expect(html).toContain('Meta de vendas');
+    expect(html).toContain('R$');
+    expect(html).toContain('Meta de recrutamento');
+    expect(html).toContain('pessoas');
+    expect(html).not.toContain('Conquistas');
+  });
+
+  it('labels and rejects an unsafe external destination inline', () => {
+    const state = createDemoState('2026-09-05T15:00:00.000Z');
+    state.workspace.externalUrl = 'http://portal.example.com';
+    const html = renderToStaticMarkup(
+      <ProfileView state={state} dispatch={() => undefined} onSignOut={() => undefined} />,
+    );
+
+    expect(html).toContain('for="external-portal-url"');
+    expect(html).toContain('aria-invalid="true"');
+    expect(html).toContain('Use um endereço completo começando com https://');
   });
 });

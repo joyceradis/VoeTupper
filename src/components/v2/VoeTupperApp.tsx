@@ -2,12 +2,15 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { createLocalPilotStore, type PilotStore } from '../../lib/v2/storage';
+import { createLocalAccessGateway, type LocalAccessGateway } from '../../lib/v2/auth';
 import type { V2State } from '../../lib/v2/model';
 import { v2Reducer, type V2Action } from '../../lib/v2/reducer';
 import { AppShell, type AppDestination } from './AppShell';
 import { NetworkView, type NetworkMode } from './NetworkView';
+import { LoginView } from './LoginView';
 import { OrderDialog } from './OrderDialog';
 import { OrdersView, type OrdersMode } from './OrdersView';
+import { ProfileView } from './ProfileView';
 import { TodayView } from './TodayView';
 import { Icon } from './ui';
 
@@ -28,6 +31,12 @@ function PreviewDestination({ destination }: { destination: Exclude<AppDestinati
 
 export default function VoeTupperApp() {
   const [state, setState] = useState<V2State | null>(null);
+  const [ready, setReady] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
+  const [hasCredential, setHasCredential] = useState(false);
+  const [demo, setDemo] = useState(false);
+  const [authBusy, setAuthBusy] = useState(false);
+  const [authError, setAuthError] = useState<string>();
   const [active, setActive] = useState<AppDestination>('today');
   const [ordersMode, setOrdersMode] = useState<OrdersMode>('history');
   const [networkMode, setNetworkMode] = useState<NetworkMode>('wall');
@@ -35,15 +44,22 @@ export default function VoeTupperApp() {
   const [warning, setWarning] = useState<string>();
   const stateRef = useRef<V2State | null>(null);
   const storeRef = useRef<PilotStore | null>(null);
+  const accessRef = useRef<LocalAccessGateway | null>(null);
 
   useEffect(() => {
     const store = createLocalPilotStore(window.localStorage);
-    const demo = new URLSearchParams(window.location.search).get('demo') === '1';
-    const loaded = store.load({ demo });
+    const demoSession = new URLSearchParams(window.location.search).get('demo') === '1';
+    const access = createLocalAccessGateway(window.localStorage, window.sessionStorage, window.crypto);
+    const loaded = store.load({ demo: demoSession });
     storeRef.current = store;
+    accessRef.current = access;
     stateRef.current = loaded.state;
     setState(loaded.state);
     setWarning(loaded.warning);
+    setDemo(demoSession);
+    setHasCredential(access.hasCredential());
+    setSignedIn(demoSession || access.isSignedIn());
+    setReady(true);
   }, []);
 
   const dispatch = useCallback((action: V2Action) => {
@@ -67,7 +83,26 @@ export default function VoeTupperApp() {
     setActive('orders');
   }, []);
 
-  if (!state) return <LoadingView />;
+  const submitAccess = useCallback(async (handle: string, password: string) => {
+    const access = accessRef.current;
+    if (!access) return;
+    setAuthBusy(true);
+    setAuthError(undefined);
+    const result = hasCredential ? await access.signIn(handle, password) : await access.create(handle, password);
+    setAuthBusy(false);
+    if (!result.ok) { setAuthError(result.error); return; }
+    setHasCredential(true);
+    setSignedIn(true);
+  }, [hasCredential]);
+
+  const signOut = useCallback(() => {
+    accessRef.current?.signOut();
+    setSignedIn(false);
+    setActive('today');
+  }, []);
+
+  if (!ready || !state) return <LoadingView />;
+  if (!signedIn) return <LoginView mode={hasCredential ? 'signin' : 'create'} busy={authBusy} error={authError} onSubmit={submitAccess} />;
 
   return (
     <>
@@ -78,6 +113,8 @@ export default function VoeTupperApp() {
           <OrdersView state={state} mode={ordersMode} onModeChange={setOrdersMode} dispatch={dispatch} onOpenOrder={() => setOrderDialogOpen(true)} />
         ) : active === 'network' ? (
           <NetworkView state={state} mode={networkMode} onModeChange={setNetworkMode} dispatch={dispatch} />
+        ) : active === 'profile' ? (
+          <ProfileView state={state} dispatch={dispatch} onSignOut={signOut} demo={demo} />
         ) : (
           <PreviewDestination destination={active} />
         )}

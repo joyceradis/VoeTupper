@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: [main, feat/mvp]
+    branches: [main, feat/mvp, feat/voetupper-v2]
   pull_request:
     branches: [main]
 permissions:

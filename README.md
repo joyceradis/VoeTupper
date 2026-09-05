@@ -1,49 +1,57 @@
-# VoeTupper — operação e rede para venda direta
+# VoeTupper V2
 
-`VoeTupper` é o codinome do repositório e do piloto atual.
+VoeTupper é um piloto mobile-first para organizar pedidos, metas e pessoas da Rede Serra em um só lugar. Esta V2 foi reconstruída como uma única aplicação Next.js e React, com a logo oficial fornecida para o projeto.
 
-## Problema
+## Estado desta entrega
 
-Líderes e Empresárias de venda direta recebem pedidos, pendências e resultados por WhatsApp, áudio, foto, relatórios e planilhas, mas precisam transformar isso em execução estruturada. O produto combina operação diária com uma rede hierárquica simples de navegar.
+A V2 está isolada na branch `feat/voetupper-v2`. A branch `main` continua com a versão estável e não deve ser alterada antes da aprovação da prévia.
 
-## Regra de produto
+Já funciona nesta primeira entrega:
 
-Se um dado pode ser derivado, não é pedido de novo. Se algo foi concluído, sai da fila operacional. Se uma função não reduz trabalho, erro, risco ou melhora retenção, não entra no MVP.
+- tela Hoje com prioridades, resumo do ciclo e metas;
+- cadastro de pedido com validações em português;
+- histórico e fechamento por etapas;
+- cadastro e diretório de pessoas;
+- mural derivado de fatos registrados;
+- ranking apenas quando existem dados comparáveis;
+- hierarquia Distribuição, Distrito, Líder, Grupo e Consultora;
+- metas independentes de vendas e recrutamento;
+- atalho configurável para um portal externo HTTPS;
+- acesso local compatível com o piloto anterior;
+- migração segura dos dados locais anteriores;
+- instalação como PWA e modo offline para o shell do aplicativo.
 
-## Hierarquia
+## Limites do piloto local
 
-Distribuição → Distrito → Grupo → Pessoa/Vínculo → Resultado semanal.
+Os dados são salvos no próprio navegador. Este acesso local evita que outra pessoa abra o piloto por acaso no mesmo aparelho, mas não é autenticação de produção nem separação multiusuário.
 
-Pessoa e vínculo são entidades distintas: `people` guarda a identidade canônica; `memberships` guarda papel, escopo e histórico. Promoções preservam o mesmo `person_id`.
+Na primeira abertura, o aplicativo procura a chave V2. Se ela ainda não existir e houver estado legado na mesma origem, ele:
 
-## Dados operacionais
+1. preserva uma cópia exata do valor anterior;
+2. converte somente os vínculos e etapas reconhecidos;
+3. mantém dados ambíguos como vínculo a conferir;
+4. grava o novo estado sem apagar a chave antiga.
 
-A camada multiusuário versionada em `supabase/migrations` inclui:
+Use `/?demo=1` para uma sessão temporária com dados sanitizados quando não houver estado salvo. O modo de demonstração não cria credencial.
 
-- períodos semanais;
-- resultados em nível distrito, grupo ou pessoa;
-- agregados de grupo sem pessoa fictícia;
-- total de vendas calculado por veteranas + recrutas;
-- importação em preview antes da gravação;
-- aliases e duplicidades com confirmação administrativa;
-- reconhecimento separado de cargo e atividade semanal;
-- reconciliação entre totais transcritos e calculados;
-- trilha de auditoria e RLS por hierarquia.
+## O que ficou para a próxima fase
 
-## Importação no piloto
+Esta entrega não conecta Supabase, Google Drive ou outro backend. Também não inclui importação definitiva de planilhas, contas simultâneas, catálogo, automação de login em portais externos ou envio automático de pedidos.
 
-CSV pode ser pré-visualizado no navegador apenas em memória para mapeamento e conferência. XLS/XLSX e a gravação definitiva dependem do backend autenticado. Arquivos e linhas importadas não são persistidos em `localStorage`.
+Esses itens dependem de uma fase própria de backend, privacidade, autorização por papel, backup e importação assistida.
 
-## Rodar
+## Rodar localmente
+
+Requisitos: Node.js 22 ou compatível e npm.
 
 ```bash
 npm install
 npm run dev
 ```
 
-A interface inicia com dados sanitizados para demonstração. O schema Supabase é a base para persistência autenticada do piloto.
+Abra `http://localhost:3000`.
 
-## Verificação
+## Verificar e exportar
 
 ```bash
 npm test
@@ -51,18 +59,22 @@ npm run typecheck
 npm run build
 ```
 
-## Dados reais
+O build é estático e fica em `out/`. A configuração de hospedagem usa essa pasta sem incluir dados locais do navegador.
 
-Nunca commite exportações da operação. CPF, telefone, arquivos importados e demais dados pessoais não devem ser versionados no GitHub público. **Senhas de portais de terceiros são excluídas por desenho.** Registros ambíguos e aliases exigem confirmação humana.
+## Prévia
 
-## Autorização
+A prévia desta branch é publicada com acesso privado pelo Sites. A versão pública da `main` permanece inalterada durante a avaliação.
 
-Distribuição e Empresária podem realizar ações administrativas dentro do próprio escopo. Líder opera e acompanha o próprio grupo, mas não altera identidade canônica, vínculos estruturais, duplicidades ou lotes de importação. Consultora/Recruta acessa apenas o próprio escopo autorizado.
+## Arquitetura
 
-Veja `docs/security/rls-matrix.md` para a matriz de RLS.
+- `src/components/v2`: interface e fluxos do produto;
+- `src/lib/v2`: modelo, reducer, seletores, migração, armazenamento e acesso local;
+- `src/lib/domain`: regras de domínio e governança preservadas;
+- `public`: logo, manifesto e service worker;
+- `supabase`: desenho futuro de persistência, ainda não conectado à V2.
 
-## Independência de fornecedores
+## Segurança de dados
 
-O software não é afiliado, patrocinado ou endossado pela Tupperware ou por outras empresas de venda direta. Não inclui logotipos de terceiros, catálogos, scraping, automação de login ou submissão automática em portais de terceiros.
+Não versione CPF, telefone real, exportações da operação, arquivos importados ou senhas de portais externos. O atalho do portal aceita somente URLs HTTPS e nunca armazena a senha desse portal.
 
-Antes de uso real multiusuário: configurar entidade operadora, privacidade/termos definitivos, autenticação Supabase, backup, monitoramento, revisão de marca e canal de direitos do titular.
+O software é uma ferramenta independente de organização para venda direta. Não automatiza acesso, coleta de sites ou submissão de pedidos em serviços de terceiros.

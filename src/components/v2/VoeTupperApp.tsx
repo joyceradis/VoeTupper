@@ -5,6 +5,8 @@ import { createLocalPilotStore, type PilotStore } from '../../lib/v2/storage';
 import type { V2State } from '../../lib/v2/model';
 import { v2Reducer, type V2Action } from '../../lib/v2/reducer';
 import { AppShell, type AppDestination } from './AppShell';
+import { OrderDialog } from './OrderDialog';
+import { OrdersView, type OrdersMode } from './OrdersView';
 import { TodayView } from './TodayView';
 import { Icon } from './ui';
 
@@ -26,6 +28,8 @@ function PreviewDestination({ destination }: { destination: Exclude<AppDestinati
 export default function VoeTupperApp() {
   const [state, setState] = useState<V2State | null>(null);
   const [active, setActive] = useState<AppDestination>('today');
+  const [ordersMode, setOrdersMode] = useState<OrdersMode>('history');
+  const [orderDialogOpen, setOrderDialogOpen] = useState(false);
   const [warning, setWarning] = useState<string>();
   const stateRef = useRef<V2State | null>(null);
   const storeRef = useRef<PilotStore | null>(null);
@@ -51,11 +55,30 @@ export default function VoeTupperApp() {
     setWarning(result?.warning);
   }, []);
 
+  const navigate = useCallback((destination: AppDestination) => {
+    setActive(destination);
+    if (destination === 'orders') setOrdersMode('history');
+  }, []);
+
+  const openClosing = useCallback(() => {
+    setOrdersMode('closing');
+    setActive('orders');
+  }, []);
+
   if (!state) return <LoadingView />;
 
   return (
-    <AppShell active={active} onNavigate={setActive} warning={warning}>
-      {active === 'today' ? <TodayView state={state} dispatch={dispatch} onOpenOrder={() => setActive('orders')} onOpenClosing={() => setActive('orders')} onNavigate={setActive} /> : <PreviewDestination destination={active} />}
-    </AppShell>
+    <>
+      <AppShell active={active} onNavigate={navigate} warning={warning}>
+        {active === 'today' ? (
+          <TodayView state={state} dispatch={dispatch} onOpenOrder={() => setOrderDialogOpen(true)} onOpenClosing={openClosing} onNavigate={navigate} />
+        ) : active === 'orders' ? (
+          <OrdersView state={state} mode={ordersMode} onModeChange={setOrdersMode} dispatch={dispatch} onOpenOrder={() => setOrderDialogOpen(true)} />
+        ) : (
+          <PreviewDestination destination={active} />
+        )}
+      </AppShell>
+      <OrderDialog open={orderDialogOpen} state={state} onClose={() => setOrderDialogOpen(false)} onCreate={order => { dispatch({ type: 'orderCreated', order }); setActive('today'); }} />
+    </>
   );
 }

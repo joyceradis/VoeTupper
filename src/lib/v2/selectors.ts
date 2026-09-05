@@ -65,8 +65,11 @@ export function selectToday(state: V2State) {
 
 export function selectWall(state: V2State): WallEntry[] {
   const peopleById = new Map(state.people.map(person => [person.id, person]));
+  const recordedOrderIds = new Set(
+    state.events.filter(event => event.kind === 'ORDER_RECEIVED').map(event => event.subjectId),
+  );
   const orderEntries: WallEntry[] = state.orders
-    .filter(order => order.stage !== 'CANCELLED')
+    .filter(order => order.stage !== 'CANCELLED' && !recordedOrderIds.has(order.id))
     .map(order => {
       const actorName = peopleById.get(order.consultantId)?.name ?? 'Consultora';
       return {

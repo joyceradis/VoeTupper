@@ -6,7 +6,7 @@ export const DEFAULT_EXTERNAL_URL = 'https://portal.tupperware.com.br/pt-BR';
 export type GoalUnit = 'BRL' | 'PEOPLE' | 'ORDERS' | 'PERCENT';
 export type GoalType = 'SALES' | 'RECRUITMENT' | 'ORDERS' | 'RETENTION';
 export type PersonStatus = 'ACTIVE' | 'NEW' | 'PAUSED' | 'INACTIVE' | 'REVIEW';
-export type NetworkEventKind = 'PERSON_JOINED' | 'GOAL_PROGRESS' | 'GOAL_REACHED' | 'ROLE_CHANGED';
+export type NetworkEventKind = 'ORDER_RECEIVED' | 'PERSON_JOINED' | 'GOAL_PROGRESS' | 'GOAL_REACHED' | 'ROLE_CHANGED';
 
 export type Person = {
   id: string;
@@ -53,6 +53,7 @@ export type NetworkEvent = {
   occurredAt: string;
   title: string;
   detail: string;
+  subjectId?: string;
 };
 
 export type V2State = {

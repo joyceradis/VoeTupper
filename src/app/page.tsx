@@ -1,2 +1,5 @@
-import OperationsApp from '@/components/OperationsApp';
-export default function Page(){return <OperationsApp/>}
+import { VoeTupperV3 } from '@/features/v3/VoeTupperV3';
+
+export default function Page() {
+  return <VoeTupperV3 />;
+}

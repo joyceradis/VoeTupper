@@ -8,6 +8,7 @@ function read(path:string){
 
 const core = read('supabase/migrations/0003_network_core.sql');
 const rls = read('supabase/migrations/0004_network_rls.sql');
+const v3 = read('supabase/migrations/0008_v3_vitrines_profiles.sql');
 const seed = read('supabase/seed.sql');
 
 describe('Supabase multiuser governance schema', () => {
@@ -43,5 +44,18 @@ describe('Supabase multiuser governance schema', () => {
     for (const district of ['Norte','Noroeste','Serra','Vitória','Vila Velha e Sul','Cariacica']) expect(seed).toContain(district);
     for (const person of ['Gerusa','Giseli Aguilar','Adriana Junta','Ritheli Radis','Tatiana Madeira','Adriana Maia','Vanessa Luciana']) expect(seed).toContain(person);
     expect(seed).not.toMatch(/@[a-z0-9.-]+\.[a-z]{2,}/i);
+  });
+
+  it('keeps Vitrine goals in protected person-scoped records', () => {
+    expect(v3).toContain('create table if not exists public.vitrines');
+    expect(v3).toContain('create table if not exists public.vitrine_goals');
+    expect(v3).toContain('America/Sao_Paulo');
+    expect(v3).toContain('alter table public.vitrines enable row level security');
+    expect(v3).toContain('vitrine_goals_scoped_read');
+    expect(v3).toContain('can_read_operational_scope');
+    expect(v3).toContain('can_admin_scope');
+    expect(v3).toContain('to authenticated');
+    expect(v3).toContain('alter view public.business_owner_scoreboard set (security_invoker = true)');
+    expect(v3).toContain('revoke all on function public.current_person_id() from public, anon');
   });
 });

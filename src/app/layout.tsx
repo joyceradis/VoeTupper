@@ -1,5 +1,23 @@
 import type { Metadata, Viewport } from 'next';
+import { ServiceWorkerRegistration } from '@/components/v2/ServiceWorkerRegistration';
 import './globals.css';
-export const metadata:Metadata={title:'Voa — Operação de vendas',description:'Operação semanal simples para equipes de venda direta',applicationName:'Voa'};
-export const viewport:Viewport={width:'device-width',initialScale:1,themeColor:'#14231d'};
-export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="pt-BR"><body>{children}</body></html>}
+import '../features/v3/v3.css';
+
+export const metadata: Metadata = {
+  title: 'VoeTupper | Sua rede mais perto',
+  description: 'Pessoas, metas e movimento da Vitrine em um só lugar.',
+  applicationName: 'VoeTupper',
+  manifest: '/manifest.webmanifest',
+  icons: { icon: '/logo-192.png', apple: '/logo-192.png' },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: '#fff8fb',
+};
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  return <html lang="pt-BR"><body>{children}<ServiceWorkerRegistration /></body></html>;
+}

@@ -1,57 +1,69 @@
-# VoeTupper V2
+<p align="center">
+  <img src="public/logo-192.png" width="112" alt="Logo VoeTupper">
+</p>
 
-VoeTupper é um piloto mobile-first para organizar pedidos, metas e pessoas da Rede Serra em um só lugar. Esta V2 foi reconstruída como uma única aplicação Next.js e React, com a logo oficial fornecida para o projeto.
+# VoeTupper V3
 
-## Estado desta entrega
+<p align="center">
+  Pessoas, metas e movimento da Vitrine em um só lugar.
+</p>
 
-A V2 está isolada na branch `feat/voetupper-v2`. A branch `main` continua com a versão estável e não deve ser alterada antes da aprovação da prévia.
+<p align="center">
+  <a href="https://voetupper-serra-v3.joyceradis.chatgpt.site/?demo=1"><strong>Abrir o VoeTupper V3</strong></a>
+</p>
 
-Já funciona nesta primeira entrega:
+Versão atual: **V3.0**
 
-- tela Hoje com prioridades, resumo do ciclo e metas;
-- cadastro de pedido com validações em português;
-- histórico e fechamento por etapas;
-- cadastro e diretório de pessoas;
-- mural derivado de fatos registrados;
-- ranking apenas quando existem dados comparáveis;
-- hierarquia Distribuição, Distrito, Líder, Grupo e Consultora;
-- metas independentes de vendas e recrutamento;
-- atalho configurável para um portal externo HTTPS;
-- acesso local compatível com o piloto anterior;
-- migração segura dos dados locais anteriores;
-- instalação como PWA e modo offline para o shell do aplicativo.
+## O que é
 
-## Limites do piloto local
+O VoeTupper organiza a rotina de Empresárias, Líderes e Consultoras da Rede Serra. A V3 reúne prioridades, pessoas, estrutura da rede, metas individuais e interação da comunidade com uma experiência simples para celular e notebook.
 
-Os dados são salvos no próprio navegador. Este acesso local evita que outra pessoa abra o piloto por acaso no mesmo aparelho, mas não é autenticação de produção nem separação multiusuário.
+O fechamento operacional considera a **Vitrine** como período principal e ocorre na **segunda-feira às 12:00**, no horário de São Paulo.
 
-Na primeira abertura, o aplicativo procura a chave V2. Se ela ainda não existir e houver estado legado na mesma origem, ele:
+## O que já está disponível
 
-1. preserva uma cópia exata do valor anterior;
-2. converte somente os vínculos e etapas reconhecidos;
-3. mantém dados ambíguos como vínculo a conferir;
-4. grava o novo estado sem apagar a chave antiga.
+- Home personalizada com Radar de prioridades;
+- destaque para quem está quase alcançando a meta;
+- Comunidade com interações rápidas;
+- lista compacta de pessoas conforme o nível de acesso;
+- inativas protegidas até a abertura explícita do total;
+- Mapa Vivo do Espírito Santo e árvore da rede;
+- Corrida da Vitrine baseada no percentual da meta individual;
+- Perfil com informações operacionais relevantes;
+- importação de equipe em CSV com revisão de duplicidades e grupos;
+- separação clara entre a conta do VoeTupper e o acesso do TupperNet;
+- menu adaptativo com movimento elástico no celular;
+- modo de demonstração completamente separado dos dados reais.
 
-Use `/?demo=1` para uma sessão temporária com dados sanitizados quando não houver estado salvo. O modo de demonstração não cria credencial.
+## Hierarquia e privacidade
 
-## O que ficou para a próxima fase
+As informações operacionais sobem pela hierarquia autorizada:
 
-Esta entrega não conecta Supabase, Google Drive ou outro backend. Também não inclui importação definitiva de planilhas, contas simultâneas, catálogo, automação de login em portais externos ou envio automático de pedidos.
+1. Distribuição;
+2. Empresária do Distrito;
+3. Líder do Grupo;
+4. Consultora.
 
-Esses itens dependem de uma fase própria de backend, privacidade, autorização por papel, backup e importação assistida.
+Consultoras não recebem informações privadas de níveis superiores. Líderes enxergam apenas o próprio grupo. Empresárias enxergam o próprio Distrito. A Distribuição enxerga os Distritos sob sua responsabilidade.
 
-## Rodar localmente
+Credenciais do TupperNet não são salvas no navegador, no Git, em exemplos ou em arquivos de demonstração. O cofre definitivo depende da conexão segura com o backend.
 
-Requisitos: Node.js 22 ou compatível e npm.
+## Dados reais
+
+A demonstração usa nomes e números identificados como exemplos. A equipe real deve entrar por importação revisada ou cadastro progressivo. O sistema não inventa pessoas para completar grupos ou totais.
+
+Nunca publique neste repositório CPF, telefone real, exportações da operação ou senhas de portais externos.
+
+## Desenvolvimento
+
+Requisitos: Node.js 22 e npm.
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
-Abra `http://localhost:3000`.
-
-## Verificar e exportar
+Verificação completa:
 
 ```bash
 npm test
@@ -59,22 +71,19 @@ npm run typecheck
 npm run build
 ```
 
-O build é estático e fica em `out/`. A configuração de hospedagem usa essa pasta sem incluir dados locais do navegador.
+## Estrutura da V3
 
-## Prévia
+- `src/features/v3`: experiência, regras e componentes da V3;
+- `src/features/v3/domain`: Vitrines, permissões, prioridades e ranking;
+- `src/features/v3/data`: separação entre dados reais e demonstração;
+- `supabase/migrations`: modelo autenticado e políticas de acesso;
+- `docs/superpowers/specs`: decisões de produto e arquitetura;
+- `docs/superpowers/plans`: plano de implementação versionado.
 
-A prévia desta branch é publicada com acesso privado pelo Sites. A versão pública da `main` permanece inalterada durante a avaliação.
+## Versões anteriores
 
-## Arquitetura
+A V2 permanece preservada na branch `feat/voetupper-v2`. A V3 foi desenvolvida na branch `feat/voetupper-v3` antes de se tornar a versão atual.
 
-- `src/components/v2`: interface e fluxos do produto;
-- `src/lib/v2`: modelo, reducer, seletores, migração, armazenamento e acesso local;
-- `src/lib/domain`: regras de domínio e governança preservadas;
-- `public`: logo, manifesto e service worker;
-- `supabase`: desenho futuro de persistência, ainda não conectado à V2.
+## Independência
 
-## Segurança de dados
-
-Não versione CPF, telefone real, exportações da operação, arquivos importados ou senhas de portais externos. O atalho do portal aceita somente URLs HTTPS e nunca armazena a senha desse portal.
-
-O software é uma ferramenta independente de organização para venda direta. Não automatiza acesso, coleta de sites ou submissão de pedidos em serviços de terceiros.
+O VoeTupper é uma ferramenta independente de organização para venda direta. Não é afiliado, patrocinado ou endossado pela Tupperware e não automatiza login ou envio de pedidos em serviços de terceiros.

@@ -1,10 +1,11 @@
 import type { Metadata, Viewport } from 'next';
 import { ServiceWorkerRegistration } from '@/components/v2/ServiceWorkerRegistration';
 import './globals.css';
+import '../features/v3/v3.css';
 
 export const metadata: Metadata = {
-  title: 'VoeTupper | Sua rede em movimento',
-  description: 'Pedidos, metas e pessoas da Rede Serra em um só lugar.',
+  title: 'VoeTupper | Sua rede mais perto',
+  description: 'Pessoas, metas e movimento da Vitrine em um só lugar.',
   applicationName: 'VoeTupper',
   manifest: '/manifest.webmanifest',
   icons: { icon: '/logo-192.png', apple: '/logo-192.png' },

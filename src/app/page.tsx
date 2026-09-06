@@ -1,5 +1,5 @@
-import VoeTupperApp from '@/components/v2/VoeTupperApp';
+import { VoeTupperV3 } from '@/features/v3/VoeTupperV3';
 
 export default function Page() {
-  return <VoeTupperApp />;
+  return <VoeTupperV3 />;
 }

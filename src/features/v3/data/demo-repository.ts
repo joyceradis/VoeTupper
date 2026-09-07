@@ -25,9 +25,9 @@ export function createDemoSnapshot(): V3Snapshot {
     },
     vitrine: {
       id: 'demo-vitrine',
-      label: 'Vitrine de demonstração',
+      label: 'Vitrine 09/2026 · exemplo',
       opensAt: '2026-08-25T12:00:00-03:00',
-      closesAt: '2026-09-07T12:00:00-03:00',
+      closesAt: '2026-09-07T12:50:00-03:00',
       timezone: 'America/Sao_Paulo',
     },
     people: [

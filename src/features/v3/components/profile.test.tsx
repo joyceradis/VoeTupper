@@ -11,7 +11,7 @@ describe('V3 profile', () => {
     expect(html).toContain('Ritheli exemplo');
     expect(html).toContain('Dados do VoeTupper');
     expect(html).toContain('Acesso do TupperNet');
-    expect(html).toContain('Nunca salvo neste navegador');
+    expect(html).toContain('O cadastro e a cópia de senhas ainda não estão disponíveis');
     expect(html).toContain('Importar equipe');
     expect(html).not.toContain('type="password"');
     expect(html).not.toContain('—');

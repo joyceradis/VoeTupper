@@ -7,7 +7,7 @@ import { requestPasswordReset, signInVoeTupper } from './auth/session';
 import { AccessView } from './components/AccessView';
 import { V3Shell, type V3Destination } from './components/V3Shell';
 import { HomeView } from './components/HomeView';
-import { NetworkView } from './components/NetworkView';
+import { NetworkView, type NetworkTab } from './components/NetworkView';
 import { ProfileView } from './components/ProfileView';
 import { createRepository, type LoadSnapshotResult } from './data/repository';
 import type { V3Snapshot } from './domain/model';
@@ -16,7 +16,7 @@ type AppState = { kind: 'loading' } | LoadSnapshotResult;
 
 export function V3StatusView({ kind }: { kind: 'loading' | 'configuration-required' | 'error' }) {
   if (kind === 'loading') return <main className="v3-status"><Image src="/logo-192.png" alt="VoeTupper" width={88} height={88} /><strong>Preparando sua rede...</strong></main>;
-  if (kind === 'configuration-required') return <main className="v3-status"><Image src="/logo-192.png" alt="VoeTupper" width={88} height={88} /><p className="v3-eyebrow">VOETUPPER V3</p><h1>Acesso real em preparação</h1><p>A nova experiência já está pronta para receber as contas da equipe. Enquanto conectamos os dados reais, você pode conhecer a interface com exemplos identificados.</p><a href="?demo=1">Abrir demonstração</a></main>;
+  if (kind === 'configuration-required') return <main className="v3-status"><Image src="/logo-192.png" alt="VoeTupper" width={88} height={88} /><p className="v3-eyebrow">VOETUPPER</p><h1>Conheça a demonstração</h1><p>Abra sem senha para conferir as telas com exemplos. O acesso e os dados reais da equipe ainda estão em preparação.</p><a href="?demo=1">Abrir demonstração</a></main>;
   return <main className="v3-status"><Image src="/logo-192.png" alt="VoeTupper" width={88} height={88} /><h1>Não conseguimos abrir sua rede</h1><p>Atualize a página. Se continuar assim, avise a pessoa responsável pelo VoeTupper.</p><button type="button" onClick={() => location.reload()}>Tentar novamente</button></main>;
 }
 
@@ -27,6 +27,7 @@ function TemporaryView({ destination, snapshot }: { destination: V3Destination; 
 export function VoeTupperV3() {
   const [state, setState] = useState<AppState>({ kind: 'loading' });
   const [active, setActive] = useState<V3Destination>('home');
+  const [networkTab, setNetworkTab] = useState<NetworkTab>('community');
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [demo, setDemo] = useState(false);
@@ -69,6 +70,6 @@ export function VoeTupperV3() {
   const district = state.snapshot.districts.find(item => item.id === state.snapshot.membership.districtId);
   const networkName = district ? `Distrito ${district.name}` : 'Sua rede';
   return <V3Shell active={active} mode={demo ? 'DEMO' : state.snapshot.mode} networkName={networkName} onNavigate={setActive}>
-    {active === 'home' ? <HomeView snapshot={state.snapshot} onOpenNetwork={() => setActive('network')} /> : active === 'network' ? <NetworkView snapshot={state.snapshot} /> : <TemporaryView destination={active} snapshot={state.snapshot} />}
+    {active === 'home' ? <HomeView snapshot={state.snapshot} onOpenNetwork={tab => { setNetworkTab(tab); setActive('network'); }} /> : active === 'network' ? <NetworkView snapshot={state.snapshot} initialTab={networkTab} /> : <TemporaryView destination={active} snapshot={state.snapshot} />}
   </V3Shell>;
 }

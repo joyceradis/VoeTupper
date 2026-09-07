@@ -11,8 +11,9 @@ describe('V3 Home Radar', () => {
     expect(html).toContain('Olá, Ritheli exemplo!');
     expect(html).toContain('Radar de hoje');
     expect(html).toContain('Convide sua rede para o próximo movimento');
-    expect(html).toContain('Tupperware Brasil, sempre por perto');
-    expect(html).toContain('https://www.tupperware.com.br/');
+    expect(html).toContain('Abrir minha rede');
+    expect(html).not.toContain('CONEXÃO OFICIAL');
+    expect(html).not.toContain('https://www.tupperware.com.br/');
     expect(html).toContain('Marina exemplo');
     expect(html.indexOf('Radar de hoje')).toBeLessThan(html.indexOf('Suas metas'));
     expect(html).toContain('segunda-feira, 12:00');

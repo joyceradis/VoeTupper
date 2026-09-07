@@ -3,18 +3,12 @@ import OpenAI from "openai";
 
 // Inicializa os clientes usando as chaves de ambiente
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 const [owner, repo] = process.env.GITHUB_REPOSITORY.split("/");
 const pull_number = parseInt(process.env.PR_NUMBER, 10);
 
 async function runReview() {
-  if (!process.env.OPENAI_API_KEY) {
-    console.log("OPENAI_API_KEY não configurada; revisão automática ignorada.");
-    return;
-  }
-
-  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
   try {
     // 1. Obtém o diff das alterações do Pull Request
     const { data: diff } = await octokit.rest.pulls.get({

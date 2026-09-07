@@ -15,13 +15,13 @@ export type RankingEntry = {
 
 function percentage(goal: Goal) {
   if (goal.target <= 0) return 0;
-  return Math.min(100, Math.round((goal.current / goal.target) * 100));
+  return Math.max(0, Math.min(goal.current < goal.target ? 99 : 100, Math.round((goal.current / goal.target) * 100)));
 }
 
 export function rankVitrineProgress(snapshot: V3Snapshot, role: NetworkRole): RankingEntry[] {
   const names = new Map(snapshot.people.filter(person => person.role === role).map(person => [person.personId, person.displayName]));
   return snapshot.goals
-    .filter(goal => goal.type === 'SALES' && names.has(goal.personId))
+    .filter(goal => goal.vitrineId === snapshot.vitrine.id && goal.type === 'SALES' && names.has(goal.personId))
     .map(goal => ({
       personId: goal.personId,
       personName: names.get(goal.personId)!,
@@ -35,7 +35,7 @@ export function rankVitrineProgress(snapshot: V3Snapshot, role: NetworkRole): Ra
 export function buildHomeInsights(snapshot: V3Snapshot): HomeInsight[] {
   const names = new Map(snapshot.people.map(person => [person.personId, person.displayName]));
   const nearGoal: HomeInsight[] = snapshot.goals
-    .filter(goal => goal.personId !== snapshot.viewer.personId && goal.type === 'SALES')
+    .filter(goal => goal.vitrineId === snapshot.vitrine.id && goal.personId !== snapshot.viewer.personId && goal.type === 'SALES')
     .map(goal => ({
       kind: 'NEAR_GOAL' as const,
       personId: goal.personId,
@@ -49,7 +49,7 @@ export function buildHomeInsights(snapshot: V3Snapshot): HomeInsight[] {
   const inactiveCount = snapshot.people.filter(person => person.status === 'INACTIVE' || person.status === 'REACTIVATION_ELIGIBLE').length;
   const inactive: HomeInsight[] = inactiveCount ? [{ kind: 'INACTIVE_COUNT', count: inactiveCount }] : [];
   const own: HomeInsight[] = snapshot.goals
-    .filter(goal => goal.personId === snapshot.viewer.personId)
+    .filter(goal => goal.vitrineId === snapshot.vitrine.id && goal.personId === snapshot.viewer.personId)
     .map(goal => ({ kind: 'OWN_GOAL' as const, goalType: goal.type, progress: percentage(goal), remaining: Math.max(0, goal.target - goal.current) }));
   return [...nearGoal, ...inactive, ...own];
 }

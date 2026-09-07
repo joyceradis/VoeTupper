@@ -26,4 +26,19 @@ describe('V3 insights', () => {
     expect(ranking.map(item => item.personName)).toEqual(['Marina exemplo', 'Paula exemplo']);
     expect(ranking.map(item => item.progress)).toEqual([88, 51]);
   });
+
+  it('excludes earlier Vitrines from rankings and priorities', () => {
+    const snapshot = createDemoSnapshot();
+    snapshot.goals.push({ ...snapshot.goals[2], id: 'old-leader-goal', vitrineId: 'previous', current: 1499 });
+    expect(rankVitrineProgress(snapshot, 'LEADER')).toHaveLength(2);
+    expect(buildHomeInsights(snapshot).filter(item => item.kind === 'NEAR_GOAL')).toHaveLength(1);
+  });
+
+  it('keeps a small remaining amount visible instead of rounding to completion', () => {
+    const snapshot = createDemoSnapshot();
+    snapshot.goals[2].current = 1499.99;
+    const entry = buildHomeInsights(snapshot).find(item => item.kind === 'NEAR_GOAL');
+    expect(entry).toMatchObject({ progress: 99 });
+    if (entry?.kind === 'NEAR_GOAL') expect(entry.remaining).toBeCloseTo(0.01);
+  });
 });

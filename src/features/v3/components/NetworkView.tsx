@@ -6,13 +6,13 @@ import { LivingNetwork } from './LivingNetwork';
 import { PeopleList } from './PeopleList';
 import { VitrineRace } from './VitrineRace';
 
-type NetworkTab = 'community' | 'people' | 'map' | 'race';
+export type NetworkTab = 'community' | 'people' | 'map' | 'race';
 const tabs: { id: NetworkTab; label: string }[] = [
   { id: 'community', label: 'Comunidade' }, { id: 'people', label: 'Pessoas' }, { id: 'map', label: 'Mapa Vivo' }, { id: 'race', label: 'Corrida' },
 ];
 
 function Community({ snapshot }: { snapshot: V3Snapshot }) {
-  const topGoal = snapshot.goals.find(goal => goal.current > 0);
+  const topGoal = snapshot.goals.find(goal => goal.vitrineId === snapshot.vitrine.id && goal.personId === snapshot.viewer.personId && goal.type === 'SALES' && goal.current > 0);
   return <section className="v3-community">
     <article className="v3-compose"><span>{snapshot.viewer.displayName.slice(0, 1)}</span><button type="button">Compartilhe uma conquista, dica ou incentivo...</button></article>
     <article className="v3-post"><header><span>VT</span><div><strong>Vitrine em movimento</strong><small>Agora na sua rede</small></div></header><p>{topGoal ? `${snapshot.viewer.displayName} já movimentou ${money.format(topGoal.current)} nesta Vitrine.` : 'A primeira conquista da Vitrine pode começar por você.'}</p><footer><button type="button">♡ Curtir</button><button type="button">○ Comentar</button><button type="button">↗ Incentivar</button></footer></article>

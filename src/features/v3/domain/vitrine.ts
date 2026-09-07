@@ -11,10 +11,12 @@ export function formatVitrineClosing(vitrine: Vitrine) {
   const parts = new Intl.DateTimeFormat('pt-BR', {
     weekday: 'long',
     hour: '2-digit',
+    minute: '2-digit',
     timeZone: vitrine.timezone,
     hour12: false,
   }).formatToParts(new Date(vitrine.closesAt));
   const weekday = parts.find(part => part.type === 'weekday')?.value ?? '';
   const hour = parts.find(part => part.type === 'hour')?.value ?? '';
-  return `Fecha ${weekday} às ${Number(hour)}h`;
+  const minute = parts.find(part => part.type === 'minute')?.value ?? '00';
+  return `Fechamento: ${weekday} às ${Number(hour)}h${minute}`;
 }

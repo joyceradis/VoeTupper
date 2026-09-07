@@ -12,7 +12,7 @@ export function TeamImport({ groups }: { groups: string[] }) {
     setSummary(parsed.errors.length ? `${parsed.rows.length} linhas encontradas. ${parsed.errors.length} precisam de revisão.` : `${parsed.rows.length} pessoas prontas para revisão.`);
   }
   return <article className="v3-import-card">
-    <div><p className="v3-eyebrow">EQUIPE REAL</p><h2>Importar equipe</h2><p>Traga uma planilha CSV com nome, função, código, grupo e telefone. Nada é salvo antes da sua revisão.</p></div>
+    <div><p className="v3-eyebrow">EM PREPARAÇÃO</p><h2>Importar equipe</h2><p>Por enquanto, o arquivo CSV é apenas conferido neste navegador. As pessoas ainda não são cadastradas nem salvas. Use uma planilha de exemplo para testar.</p></div>
     <label htmlFor="v3-team-file">Escolher arquivo CSV</label>
     <input id="v3-team-file" type="file" accept=".csv,text/csv" onChange={selectFile} />
     {summary ? <p className="v3-import-summary" role="status">{summary}</p> : null}

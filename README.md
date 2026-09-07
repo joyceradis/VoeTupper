@@ -1,69 +1,63 @@
-<p align="center">
-  <img src="public/logo-192.png" width="112" alt="Logo VoeTupper">
-</p>
+<p align="center"><img src="public/logo-192.png" width="112" alt="Logo VoeTupper"></p>
 
-# VoeTupper V3
+# VoeTupper
 
-<p align="center">
-  Pessoas, metas e movimento da Vitrine em um só lugar.
-</p>
+Uma ferramenta de apoio à rotina de pedidos, metas e equipe da Vitoriaware.
 
-<p align="center">
-  <a href="https://voetupper-serra-v3.joyceradis.chatgpt.site/?demo=1"><strong>Abrir o VoeTupper V3</strong></a>
-</p>
+**[Abrir a demonstração, sem senha](https://voetupper-serra-v3.joyceradis.chatgpt.site/?demo=1)** · [Endereço pelo GitHub](https://joyceradis.github.io/VoeTupper/)
 
-Versão atual: **V3.0**
+O GitHub guarda o código e o histórico. O GitHub Pages encaminha para a demonstração hospedada em Sites. Os dois endereços levam à mesma experiência.
 
-## O que é
+## Estado atual
 
-O VoeTupper organiza a rotina de Empresárias, Líderes e Consultoras da Rede Serra. A V3 reúne prioridades, pessoas, estrutura da rede, metas individuais e interação da comunidade com uma experiência simples para celular e notebook.
+**V3.1: demonstração corrigida. V4 operacional em planejamento.** A demonstração usa pessoas e valores fictícios identificados como exemplos. Ela ainda não contém a equipe real de Ritheli e não substitui o Tupper.NET.
 
-O fechamento operacional considera a **Vitrine** como período principal e ocorre na **segunda-feira às 12:00**, no horário de São Paulo.
+### O que funciona nesta demonstração
 
-## O que já está disponível
+- Home com **quanto falta para a meta** em destaque e realizado em segundo plano;
+- metas, Radar e Corrida separados por Vitrine;
+- exemplo da Vitrine 09/2026 com encerramento em **07/09/2026, segunda-feira às 12h50**, horário de São Paulo, conforme informação da operação;
+- Radar com navegação direta para Corrida e Pessoas;
+- lista compacta de pessoas no escopo do perfil, busca por nome/grupo/código e botão para copiar o código informado;
+- nomes de inativas revelados por ação explícita;
+- árvore expansível da rede e ilustração do Espírito Santo;
+- atalhos para o Tupper.NET da Vitoriaware e a Vitrine Digital oficial;
+- conferência inicial de CSV, sem cadastrar ou salvar as linhas.
 
-- Home personalizada com Radar de prioridades;
-- destaque para quem está quase alcançando a meta;
-- Comunidade com interações rápidas;
-- lista compacta de pessoas conforme o nível de acesso;
-- inativas protegidas até a abertura explícita do total;
-- Mapa Vivo do Espírito Santo e árvore da rede;
-- Corrida da Vitrine baseada no percentual da meta individual;
-- Perfil com informações operacionais relevantes;
-- importação de equipe em CSV com revisão de duplicidades e grupos;
-- separação clara entre a conta do VoeTupper e o acesso do TupperNet;
-- menu adaptativo com movimento elástico no celular;
-- modo de demonstração completamente separado dos dados reais.
+### O que ainda precisa ser implementado ou conectado
 
-## Hierarquia e privacidade
+| Parte | Situação real |
+| --- | --- |
+| Pedidos | O fluxo local da V2 está preservado no código; ainda não foi integrado à interface V3. |
+| Equipe real e contas | Existe preparação de autenticação e banco; a demonstração não provisiona contas nem importa a equipe. |
+| Senhas Tupper.NET | Cofre e cópia de senhas ainda indisponíveis. Nenhuma senha de portal é recebida nesta demonstração. |
+| Produtos e ofertas | Há atalhos oficiais. Não há sincronização das ofertas privadas, catálogo de códigos ou leitura de fotos. |
+| Comunidade | Composição visual; publicação, curtidas e comentários ainda não persistem. |
+| Metas | Exibição e cálculos funcionam com o conjunto carregado. A definição, o bloqueio por Vitrine e a correção auditada ainda dependem do fluxo de gravação. |
+| Mapa | Ilustrativo; não representa vendas geográficas em tempo real. |
 
-As informações operacionais sobem pela hierarquia autorizada:
+## Direção da V4
 
-1. Distribuição;
-2. Empresária do Distrito;
-3. Líder do Grupo;
-4. Consultora.
+As consultoras continuam enviando pedidos pelo WhatsApp. A ferramenta deve ajudar a empresária a identificar produtos, copiar códigos, conferir e organizar o fechamento no portal oficial.
 
-Consultoras não recebem informações privadas de níveis superiores. Líderes enxergam apenas o próprio grupo. Empresárias enxergam o próprio Distrito. A Distribuição enxerga os Distritos sob sua responsabilidade.
+O pedido precisa distinguir **quem solicitou** de **qual cadastro recebeu o lançamento**. Uma compra passada no cadastro da empresária por limite de crédito não pode ser atribuída automaticamente à meta oficial da consultora.
 
-Credenciais do TupperNet não são salvas no navegador, no Git, em exemplos ou em arquivos de demonstração. O cofre definitivo depende da conexão segura com o backend.
+Leia a [estrutura da V4 e a pesquisa oficial](docs/superpowers/specs/2026-09-07-voetupper-v4-apoio-pedidos.md): fluxo, regras de Vitrine, ofertas, credenciais, reconhecimento e critérios para uso real.
 
-## Dados reais
+## Dados e acesso
 
-A demonstração usa nomes e números identificados como exemplos. A equipe real deve entrar por importação revisada ou cadastro progressivo. O sistema não inventa pessoas para completar grupos ou totais.
+A demonstração pública contém apenas exemplos. Dados reais exigem autenticação e autorização no servidor, respeitando Distribuição, Empresária, Líder e Consultora. A hierarquia de gestão não concede automaticamente acesso às senhas pessoais de terceiros.
 
-Nunca publique neste repositório CPF, telefone real, exportações da operação ou senhas de portais externos.
+CPF, senhas, arquivos reais da operação e contatos não devem entrar neste repositório público. O acesso ao VoeTupper é separado do acesso ao Tupper.NET.
 
 ## Desenvolvimento
 
-Requisitos: Node.js 22 e npm.
+Node.js 22 e npm:
 
 ```bash
 npm ci
 npm run dev
 ```
-
-Verificação completa:
 
 ```bash
 npm test
@@ -71,19 +65,12 @@ npm run typecheck
 npm run build
 ```
 
-## Estrutura da V3
+- `src/features/v3`: interface e regras atuais;
+- `src/components/v2`: fluxo local anterior, incluindo pedidos;
+- `supabase/migrations`: preparação do banco e políticas de acesso;
+- `docs/superpowers/specs`: decisões e propostas de produto;
+- `docs/superpowers/plans`: planos anteriores.
 
-- `src/features/v3`: experiência, regras e componentes da V3;
-- `src/features/v3/domain`: Vitrines, permissões, prioridades e ranking;
-- `src/features/v3/data`: separação entre dados reais e demonstração;
-- `supabase/migrations`: modelo autenticado e políticas de acesso;
-- `docs/superpowers/specs`: decisões de produto e arquitetura;
-- `docs/superpowers/plans`: plano de implementação versionado.
+A V3 evoluiu a partir da V2. O histórico e a branch `feat/voetupper-v2` preservam o trabalho anterior.
 
-## Versões anteriores
-
-A V2 permanece preservada na branch `feat/voetupper-v2`. A V3 foi desenvolvida na branch `feat/voetupper-v3` antes de se tornar a versão atual.
-
-## Independência
-
-O VoeTupper é uma ferramenta independente de organização para venda direta. Não é afiliado, patrocinado ou endossado pela Tupperware e não automatiza login ou envio de pedidos em serviços de terceiros.
+O VoeTupper é uma ferramenta independente. Não é um serviço oficial da Tupperware e não envia pedidos ao portal automaticamente.

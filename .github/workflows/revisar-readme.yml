@@ -1,0 +1,48 @@
+name: Revisar README com Llama 3
+
+on:
+  workflow_dispatch: # Permite que você rode manualmente clicando em "Run workflow"
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+    
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Instalar biblioteca da API
+        run: pip install openai
+
+      - name: Analisar documentação e criar Issue
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python -c '
+          import os, subprocess
+          from openai import OpenAI
+          
+          # Conecta no Llama 3 usando a mesma estrutura da OpenAI
+          client = OpenAI(api_key=os.environ["GROQ_API_KEY"], base_url="https://api.groq.com/openai/v1")
+          
+          with open("README.md", "r") as f: 
+              content = f.read()
+          
+          res = client.chat.completions.create(
+              model="llama3-8b-8192",
+              messages=[
+                  {"role": "system", "content": "Você é um analista de projetos. Leia o README deste repositório e crie um relatório curto apontando o que parece desatualizado ou confuso, e sugira 3 melhorias práticas."},
+                  {"role": "user", "content": content}
+              ]
+          )
+          
+          # Salva a resposta e cria uma Issue no GitHub
+          with open("feedback.md", "w") as f: 
+              f.write(res.choices[0].message.content)
+              
+          subprocess.run(["gh", "issue", "create", "--title", "🤖 Sugestões para o README (Llama 3)", "--body-file", "feedback.md"])
+          '

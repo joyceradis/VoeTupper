@@ -2,57 +2,107 @@
   <img src="public/logo-192.png" width="112" alt="Logo VoeTupper">
 </p>
 
-# VoeTupper V3
+# VoeTupper
 
 <p align="center">
-  Pessoas, metas e movimento da Vitrine em um só lugar.
+  <strong>CRM operacional e gestão de rede para venda direta.</strong>
 </p>
 
 <p align="center">
-  <a href="https://voetupper-serra-v3.joyceradis.chatgpt.site/?demo=1"><strong>Abrir o VoeTupper V3</strong></a>
+  Pessoas, metas, estrutura e movimento da Vitrine em uma experiência mobile-first.
 </p>
 
-Versão atual: **V3.0**
+<p align="center">
+  <a href="https://voetupper-serra-v3.joyceradis.chatgpt.site/?demo=1"><strong>Abrir demonstração V3</strong></a>
+</p>
 
-## O que é
+## O produto
 
-O VoeTupper organiza a rotina de Empresárias, Líderes e Consultoras da Rede Serra. A V3 reúne prioridades, pessoas, estrutura da rede, metas individuais e interação da comunidade com uma experiência simples para celular e notebook.
+O VoeTupper foi criado para organizar uma operação real de venda direta com múltiplos níveis de liderança. A aplicação reúne prioridades, pessoas, estrutura da rede, metas individuais e interação da comunidade sem exigir que a usuária transforme sua rotina em uma planilha complexa.
 
 O fechamento operacional considera a **Vitrine** como período principal e ocorre na **segunda-feira às 12:00**, no horário de São Paulo.
 
-## O que já está disponível
+## Problema
+
+A gestão de uma rede distribuída exige responder rapidamente:
+
+- quem está ativa ou inativa;
+- quem está próxima da meta;
+- quais grupos precisam de atenção;
+- como a estrutura está distribuída;
+- quais prioridades mudaram nesta Vitrine;
+- o que cada nível hierárquico pode ou não visualizar.
+
+O VoeTupper transforma essas perguntas em um workflow operacional.
+
+```text
+PESSOAS
+  ↓
+ESTRUTURA DA REDE
+  ↓
+META INDIVIDUAL
+  ↓
+PROGRESSO DA VITRINE
+  ↓
+PRIORIDADES
+  ↓
+AÇÃO DA LIDERANÇA
+```
+
+## Capacidades da V3
 
 - Home personalizada com Radar de prioridades;
-- destaque para quem está quase alcançando a meta;
+- destaque para pessoas próximas da meta;
 - Comunidade com interações rápidas;
-- lista compacta de pessoas conforme o nível de acesso;
-- inativas protegidas até a abertura explícita do total;
-- Mapa Vivo do Espírito Santo e árvore da rede;
+- visão compacta da equipe conforme nível de acesso;
+- proteção de dados de inativas até abertura explícita;
+- Mapa Vivo do Espírito Santo;
+- árvore hierárquica da rede;
 - Corrida da Vitrine baseada no percentual da meta individual;
-- Perfil com informações operacionais relevantes;
-- importação de equipe em CSV com revisão de duplicidades e grupos;
-- separação clara entre a conta do VoeTupper e o acesso do TupperNet;
-- menu adaptativo com movimento elástico no celular;
-- modo de demonstração completamente separado dos dados reais.
+- perfil com informações operacionais;
+- importação CSV com revisão de duplicidades e grupos;
+- separação entre conta do VoeTupper e acesso ao TupperNet;
+- navegação adaptativa para celular;
+- ambiente de demonstração separado dos dados reais.
 
-## Hierarquia e privacidade
+## Hierarquia e autorização
 
-As informações operacionais sobem pela hierarquia autorizada:
+```text
+DISTRIBUIÇÃO
+    ↓
+EMPRESÁRIA DO DISTRITO
+    ↓
+LÍDER DO GRUPO
+    ↓
+CONSULTORA
+```
 
-1. Distribuição;
-2. Empresária do Distrito;
-3. Líder do Grupo;
-4. Consultora.
+A visibilidade acompanha a responsabilidade operacional. Consultoras não recebem informações privadas de níveis superiores; Líderes acessam o próprio grupo; Empresárias acessam o próprio Distrito; a Distribuição visualiza os Distritos sob sua responsabilidade.
 
-Consultoras não recebem informações privadas de níveis superiores. Líderes enxergam apenas o próprio grupo. Empresárias enxergam o próprio Distrito. A Distribuição enxerga os Distritos sob sua responsabilidade.
+## Privacidade por desenho
 
-Credenciais do TupperNet não são salvas no navegador, no Git, em exemplos ou em arquivos de demonstração. O cofre definitivo depende da conexão segura com o backend.
+- credenciais de serviços externos não são armazenadas em código ou exemplos;
+- dados de demonstração são separados dos dados reais;
+- o sistema não inventa pessoas para completar grupos ou totais;
+- CPF, telefone real, exportações operacionais e senhas não devem ser publicados no repositório;
+- a arquitetura de backend prevê autenticação e políticas de acesso.
 
-## Dados reais
+## Stack e arquitetura
 
-A demonstração usa nomes e números identificados como exemplos. A equipe real deve entrar por importação revisada ou cadastro progressivo. O sistema não inventa pessoas para completar grupos ou totais.
+A V3 utiliza uma arquitetura moderna de frontend com camada de domínio separada dos dados e regras de autorização.
 
-Nunca publique neste repositório CPF, telefone real, exportações da operação ou senhas de portais externos.
+```text
+src/features/v3/
+├── domain/              # Vitrines, permissões, prioridades e ranking
+└── data/                # separação entre dados reais e demonstração
+
+supabase/
+└── migrations/          # modelo autenticado e políticas de acesso
+
+docs/superpowers/
+├── specs/               # decisões de produto e arquitetura
+└── plans/               # planos de implementação versionados
+```
 
 ## Desenvolvimento
 
@@ -63,7 +113,7 @@ npm ci
 npm run dev
 ```
 
-Verificação completa:
+Verificação:
 
 ```bash
 npm test
@@ -71,19 +121,14 @@ npm run typecheck
 npm run build
 ```
 
-## Estrutura da V3
+## Evolução
 
-- `src/features/v3`: experiência, regras e componentes da V3;
-- `src/features/v3/domain`: Vitrines, permissões, prioridades e ranking;
-- `src/features/v3/data`: separação entre dados reais e demonstração;
-- `supabase/migrations`: modelo autenticado e políticas de acesso;
-- `docs/superpowers/specs`: decisões de produto e arquitetura;
-- `docs/superpowers/plans`: plano de implementação versionado.
-
-## Versões anteriores
-
-A V2 permanece preservada na branch `feat/voetupper-v2`. A V3 foi desenvolvida na branch `feat/voetupper-v3` antes de se tornar a versão atual.
+A V2 permanece preservada na branch `feat/voetupper-v2`. A V3 foi desenvolvida separadamente antes de se tornar a versão atual, preservando histórico e permitindo comparação entre decisões de produto.
 
 ## Independência
 
 O VoeTupper é uma ferramenta independente de organização para venda direta. Não é afiliado, patrocinado ou endossado pela Tupperware e não automatiza login ou envio de pedidos em serviços de terceiros.
+
+## Autoria
+
+Projeto idealizado e desenvolvido por **Dra. Joyce Radis** para uma operação real de rede, como aplicação de produto digital, CRM, modelagem de permissões e inteligência operacional.

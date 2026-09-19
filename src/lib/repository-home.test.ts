@@ -3,12 +3,14 @@ import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 describe('GitHub repository home', () => {
-  it('presents V3 as the current release with the live site', () => {
+  it('presents V3 as the current release with the live site and technical evidence', () => {
     const readme = readFileSync(resolve(process.cwd(), 'README.md'), 'utf8');
 
-    expect(readme).toContain('# VoeTupper V3');
-    expect(readme).toContain('Versão atual: **V3.0**');
+    expect(readme).toContain('# VoeTupper');
+    expect(readme).toContain('Sales-network CRM built with Next.js, React, TypeScript and Supabase');
     expect(readme).toContain('https://voetupper-serra-v3.joyceradis.chatgpt.site/?demo=1');
+    expect(readme).toContain('## O que este repositório demonstra');
+    expect(readme).toContain('Next.js 15');
     expect(readme).not.toContain('# VoeTupper V2');
   });
 

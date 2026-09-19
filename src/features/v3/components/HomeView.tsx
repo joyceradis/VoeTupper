@@ -34,7 +34,7 @@ export function HomeView({ snapshot, onOpenNetwork }: { snapshot: V3Snapshot; on
         <h2 id="v3-momentum-title">Convide sua rede para o próximo movimento</h2>
         <p>Uma mensagem de incentivo hoje pode virar uma venda, uma indicação ou uma nova história.</p>
       </div>
-      <button type="button" onClick={onOpenNetwork}>Ver quem está na Corrida <V3Icon name="arrow" /></button>
+      <button type="button" onClick={onOpenNetwork}>Abrir minha rede <V3Icon name="arrow" /></button>
     </section>
 
     <section className="v3-radar" aria-labelledby="v3-radar-title">
@@ -59,16 +59,6 @@ export function HomeView({ snapshot, onOpenNetwork }: { snapshot: V3Snapshot; on
       <div className="v3-goal-grid">
         {ownGoals.map(goal => <GoalProgress key={goal.id} label={goal.type === 'SALES' ? 'Vendas' : goal.type === 'RECRUITMENT' ? 'Recrutamento' : 'Atividade'} current={goal.current} target={goal.target} />)}
       </div>
-    </section>
-
-    <section className="v3-tupperware-connect" aria-labelledby="v3-tupperware-title">
-      <div className="v3-tupperware-mark" aria-hidden="true">T</div>
-      <div>
-        <p className="v3-eyebrow">CONEXÃO OFICIAL</p>
-        <h2 id="v3-tupperware-title">Tupperware Brasil, sempre por perto</h2>
-        <p>Acesse o portal oficial para consultar novidades, campanhas e materiais da sua marca.</p>
-      </div>
-      <a href="https://www.tupperware.com.br/" target="_blank" rel="noreferrer">Abrir portal <V3Icon name="arrow" /></a>
     </section>
   </section>;
 }

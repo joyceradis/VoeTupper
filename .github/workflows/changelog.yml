@@ -1,39 +1,48 @@
-name: Auto Generate Changelog
+name: Generate Changelog
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   changelog:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    timeout-minutes: 5
 
     steps:
-      - name: Checkout do código
+      - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Garante histórico de git para o script ler os commits
+          fetch-depth: 0
 
-      - name: Configurar Node.js
+      - name: Use Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 22
 
-      - name: Instalar Dependências
-        run: npm install openai
+      - name: Install changelog dependency
+        run: npm install --no-save openai
 
-      - name: Gerar Changelog com OpenAI
+      - name: Generate changelog
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: node scripts/changelog.js
-
-      - name: Salvar e dar Push no CHANGELOG.md
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "OPENAI_API_KEY is not configured; skipping changelog generation."
+            exit 0
+          fi
+          node scripts/changelog.js
+
+      - name: Commit changelog when changed
+        run: |
+          if git diff --quiet -- CHANGELOG.md; then
+            echo "No changelog changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add CHANGELOG.md
-          git commit -m "docs: atualiza CHANGELOG.md via OpenAI [skip ci]" || exit 0
+          git commit -m "docs: update changelog"
           git push

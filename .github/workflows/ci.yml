@@ -1,20 +1,37 @@
 name: CI
+
 on:
   push:
     branches: [main, feat/mvp, feat/voetupper-v2, feat/voetupper-v3]
   pull_request:
     branches: [main]
+
 permissions:
   contents: read
+
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm install
-      - run: npm test
-      - run: npm run typecheck
-      - run: npm run build
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test
+        run: npm test
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build

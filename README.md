@@ -9,6 +9,23 @@
 </p>
 
 <p align="center">
+  <em>Sales-network CRM built with Next.js, React, TypeScript and Supabase for hierarchy, goals, permissions and operational workflows.</em>
+</p>
+
+## O que este repositório demonstra
+
+| Competência | Evidência no projeto |
+| --- | --- |
+| Frontend moderno | Next.js 15, React 19 e TypeScript |
+| Modelagem de domínio | Vitrines, metas, hierarquia, permissões, prioridades e ranking separados da camada visual |
+| Backend / dados | Supabase, SSR client e migrations versionadas |
+| Validação | Zod para contratos de dados e regras de entrada |
+| Qualidade | Vitest, typecheck com TypeScript e build verificável |
+| Authorization thinking | escopo de visualização modelado por papel e responsabilidade operacional |
+
+**Portfolio signal:** Next.js · React · TypeScript · Supabase · Zod · Vitest · domain modeling · authorization design
+
+<p align="center">
   Pessoas, metas, estrutura e movimento da Vitrine em uma experiência mobile-first.
 </p>
 
